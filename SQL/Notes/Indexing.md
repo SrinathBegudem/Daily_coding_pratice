@@ -371,38 +371,392 @@ Remove row from leaf; may merge/redistribute if underfull.
 ### Trade-off
 Clustered indexes speed reads and ranges but can make writes costlier (splits, moves). Heaps avoid key-order maintenance but pay a cost at read time.
 
-## 7) Clustered vs Non-Clustered (Secondary) Indexes
+## 7) Clustered Index Types
 
-### Clustered Index
-- The table itself is the B+Tree
-- Leaf pages contain full rows
-- Only one per table
+A clustered index means the table itself is stored as a B+Tree. There's only one because rows can only be physically ordered one way.
 
-### Non-clustered (Secondary) Index
-- A separate B+Tree on another column or column list
-- Leaf pages contain the secondary key + a row locator (either a RID in a heap, or the clustering key in a clustered table)
+### 7.1) Single-Column Clustered Index (Most Common)
 
-**To satisfy a query:**
-1. Seek in the secondary index (fast)
-2. Then lookup the actual row via the locator (extra hop)
+**Definition**: Table physically ordered by ONE column, usually the Primary Key.
 
-If the secondary index covers the query (all needed columns are in the index), the DB can avoid the lookup (index-only plan).
-
-## 8) Composite Clustered Index
-
-A clustered index can be on multiple columns, e.g. `(user_id, created_at)`.
-
-Physical row order is **lexicographic**: first by `user_id`, then by `created_at`.
-
-### Great for Queries Like:
-```sql
-WHERE user_id = ? ORDER BY created_at DESC LIMIT 50
-WHERE user_id = ? AND created_at BETWEEN t1 AND t2
+**Physical Structure**: All rows sorted by single column value
+```
+Physical Row Order (clustered on order_id):
+Row 1: order_id=100, customer_id=501, created_at='2023-01-01'
+Row 2: order_id=101, customer_id=502, created_at='2023-01-02'  
+Row 3: order_id=102, customer_id=501, created_at='2023-01-03'
+Row 4: order_id=103, customer_id=503, created_at='2023-01-01'
 ```
 
-### ⚠️ Beware the Leftmost-Prefix Rule
-- `(a,b)` helps `WHERE a = ...` and `WHERE a = ... AND b = ...`
-- But **not** `WHERE b = ...` alone
+**SQL Examples**:
+```sql
+-- MySQL InnoDB (automatic)
+CREATE TABLE Orders (
+    order_id BIGINT PRIMARY KEY,  -- ← Single-column clustering key
+    customer_id BIGINT,
+    created_at DATETIME,
+    status VARCHAR(20)
+);
+
+-- SQL Server (explicit)  
+CREATE TABLE Orders (
+    order_id BIGINT PRIMARY KEY CLUSTERED,  -- ← Explicit single-column clustering
+    customer_id BIGINT,
+    created_at DATETIME,
+    status VARCHAR(20)
+);
+```
+
+**Optimal Query Patterns**:
+```sql
+-- ✅ FAST - Direct clustering key access
+SELECT * FROM Orders WHERE order_id = 101;                    -- O(log n) seek
+SELECT * FROM Orders WHERE order_id BETWEEN 100 AND 105;     -- Range scan
+SELECT * FROM Orders ORDER BY order_id LIMIT 10;             -- No sort needed
+
+-- ❌ SLOW - Not using clustering key  
+SELECT * FROM Orders WHERE customer_id = 501;                -- Full table scan O(n)
+SELECT * FROM Orders WHERE status = 'PENDING';               -- Full table scan O(n)
+```
+
+**When to Use**:
+- Simple entity lookups by ID
+- Standard CRUD applications  
+- When no clear composite key pattern emerges
+- Most common choice for general-purpose tables
+
+### 7.2) Composite Clustered Index (Multi-Column)
+
+**Definition**: Table physically ordered by MULTIPLE columns in priority order (lexicographic sorting).
+
+**Physical Structure**: Rows sorted by first column, then second column within first, etc.
+```
+Physical Row Order (clustered on customer_id, created_at):
+Row 1: customer_id=501, created_at='2023-01-01', order_id=100
+Row 2: customer_id=501, created_at='2023-01-02', order_id=103  
+Row 3: customer_id=501, created_at='2023-01-03', order_id=105
+Row 4: customer_id=502, created_at='2023-01-01', order_id=101
+Row 5: customer_id=502, created_at='2023-01-02', order_id=104
+```
+
+**SQL Examples**:
+```sql
+-- SQL Server
+CREATE TABLE Orders (
+    order_id BIGINT,
+    customer_id BIGINT,  
+    created_at DATETIME,
+    status VARCHAR(20),
+    PRIMARY KEY CLUSTERED (customer_id, created_at)  -- ← Composite clustering
+);
+
+-- MySQL (change PK)
+ALTER TABLE Orders DROP PRIMARY KEY;
+ALTER TABLE Orders ADD PRIMARY KEY (customer_id, created_at, order_id);
+```
+
+**Leftmost-Prefix Rule** (Critical Understanding):
+```sql
+-- Index: (customer_id, created_at)
+
+-- ✅ CAN use index efficiently:
+WHERE customer_id = 501                                    -- Uses first column
+WHERE customer_id = 501 AND created_at > '2023-01-01'    -- Uses both columns  
+WHERE customer_id = 501 ORDER BY created_at DESC         -- Perfect ordering
+
+-- ❌ CANNOT use index efficiently:
+WHERE created_at > '2023-01-01'                           -- Skips first column = scan!
+WHERE order_id = 100                                      -- Not in clustering key
+```
+
+**Optimal Query Patterns**:
+- User/tenant-specific queries: `(user_id, created_at)`
+- Time-series data: `(device_id, timestamp)`
+- Multi-tenant SaaS: `(tenant_id, entity_id)`
+- Hierarchical data: `(category_id, subcategory_id)`
+
+**When to Use**:
+- Clear access pattern by entity + time
+- Multi-tenant applications
+- Time-series or IoT data
+- When most queries filter by the first column
+
+## 8) Non-Clustered Index Types
+
+Non-clustered indexes are separate B+Trees that point to the clustered index (or RID in heaps). You can have multiple per table.
+
+### 8.1) Single-Column Non-Clustered Index
+
+**Definition**: Separate B+Tree ordered by ONE column, with leaves containing the key + pointer to clustered index.
+
+**Structure**:
+```
+Table (clustered on order_id):        Secondary Index (on customer_id):
+┌─────────────────────────────┐       ┌──────────────────────────────┐
+│ order_id=100, customer_id=501│  ←──  │customer_id=501 → order_id=100│
+│ order_id=101, customer_id=502│       │customer_id=501 → order_id=102│
+│ order_id=102, customer_id=501│  ←──  │customer_id=502 → order_id=101│
+└─────────────────────────────┘       └──────────────────────────────┘
+```
+
+**SQL Examples**:
+```sql
+-- Create single-column secondary index
+CREATE INDEX IX_Orders_Customer ON Orders (customer_id);
+CREATE INDEX IX_Orders_Status ON Orders (status);
+CREATE INDEX IX_Orders_CreatedAt ON Orders (created_at);
+```
+
+**Query Process** (Key Lookup Required):
+```sql
+-- Query: Find all orders for customer 501
+SELECT * FROM Orders WHERE customer_id = 501;
+
+-- Execution steps:
+-- 1. Seek IX_Orders_Customer B+Tree → find customer_id=501 entries 
+--    → get clustering keys: [order_id=100, order_id=102]
+-- 2. For each clustering key:
+--    - Seek clustered index for order_id=100 → get full row
+--    - Seek clustered index for order_id=102 → get full row
+-- Total: 1 secondary seek + 2 key lookups = 3 seeks
+```
+
+**Performance Characteristics**:
+- ✅ Fast for selective queries (<5% of table)
+- ❌ Key lookups add overhead (random I/O)
+- ❌ Not optimal if you need many columns
+
+**When to Use**:
+- Single-column WHERE clauses
+- Queries that need only a few columns
+- When covering index would be too large
+
+### 8.2) Composite Non-Clustered Index (Multi-Column)
+
+**Definition**: Secondary B+Tree ordered by MULTIPLE columns, follows same leftmost-prefix rule as clustered.
+
+**Structure**:
+```
+Composite Index (customer_id, created_at):
+┌─────────────────────────────────────────┐
+│(customer_id=501, created_at='2023-01-01') → order_id=100│
+│(customer_id=501, created_at='2023-01-02') → order_id=103│
+│(customer_id=502, created_at='2023-01-01') → order_id=101│
+└─────────────────────────────────────────┘
+```
+
+**SQL Examples**:
+```sql
+-- Multi-column secondary index
+CREATE INDEX IX_Orders_Customer_Date ON Orders (customer_id, created_at);
+CREATE INDEX IX_Orders_Status_Date ON Orders (status, created_at);
+
+-- Order matters! Design for your query patterns:
+CREATE INDEX IX_Orders_Date_Customer ON Orders (created_at, customer_id); -- Different!
+```
+
+**Leftmost-Prefix Examples**:
+```sql
+-- Index: IX_Orders_Customer_Date (customer_id, created_at)
+
+-- ✅ Efficient queries:
+WHERE customer_id = 501                                    -- Uses prefix
+WHERE customer_id = 501 AND created_at > '2023-01-01'    -- Uses both
+WHERE customer_id = 501 ORDER BY created_at               -- Perfect ordering
+
+-- ❌ Inefficient queries:
+WHERE created_at > '2023-01-01'                           -- Skips leftmost prefix
+WHERE status = 'PENDING' AND created_at > '2023-01-01'   -- Wrong columns
+```
+
+**Benefits Over Single-Column**:
+- Better selectivity (narrows results more)
+- Eliminates sorts for ORDER BY
+- Can support range queries on second column
+
+**When to Use**:
+- Multi-column WHERE clauses
+- Queries with ORDER BY on indexed columns
+- When you need better selectivity than single column
+
+### 8.3) Covering Index (Include Columns)
+
+**Definition**: Index contains ALL columns needed by the query, eliminating key lookups entirely.
+
+**The Problem** (Non-Covering Index):
+```sql
+-- Query needs customer_id, created_at, status, total_cents
+SELECT customer_id, created_at, status, total_cents
+FROM Orders  
+WHERE customer_id = 501;
+
+-- With regular index on (customer_id):
+-- 1. Seek secondary index → get order_ids: [100, 102, 105]
+-- 2. Key lookup order_id=100 → get status, total_cents  
+-- 3. Key lookup order_id=102 → get status, total_cents
+-- 4. Key lookup order_id=105 → get status, total_cents
+-- Result: 1 seek + 3 key lookups = 4 operations!
+```
+
+**The Solution** (Covering Index):
+
+#### SQL Server Syntax:
+```sql
+-- Key columns for seeking/sorting, INCLUDE for extra data
+CREATE INDEX IX_Orders_Customer_Covering
+ON Orders (customer_id, created_at)       -- Key columns (can be used for sorting)
+INCLUDE (status, total_cents);            -- Additional columns (leaf level only)
+```
+
+#### MySQL/InnoDB Syntax:
+```sql  
+-- No INCLUDE keyword - add all columns to key
+CREATE INDEX IX_Orders_Customer_Covering
+ON Orders (customer_id, created_at, status, total_cents);
+
+-- Or use prefix for large columns:
+CREATE INDEX IX_Orders_Customer_Covering
+ON Orders (customer_id, created_at, status(10), total_cents);
+```
+
+**Query Execution** (With Covering Index):
+```sql
+SELECT customer_id, created_at, status, total_cents
+FROM Orders  
+WHERE customer_id = 501;
+
+-- Execution with covering index:
+-- 1. Seek IX_Orders_Customer_Covering → get ALL needed columns directly
+-- Result: 1 seek operation only! No key lookups!
+```
+
+**Benefits**:
+- ✅ Eliminates key lookups → much faster
+- ✅ Reduces I/O significantly  
+- ✅ Index-only execution plans
+
+**Trade-offs**:
+- ❌ Larger index size → more storage
+- ❌ Slower writes (more data to maintain)
+- ❌ Larger memory footprint
+
+**When to Use**:
+- High-frequency queries that need specific columns
+- Queries with expensive key lookups (many matching rows)
+- READ-heavy workloads where write cost is acceptable
+
+### 8.4) Filtered Index (Partial Index)
+
+**Definition**: Index only on rows that meet a specific WHERE condition, making it smaller and more selective.
+
+**The Problem** (Regular Index):
+```sql
+-- Table: 1M orders, 950K are 'ACTIVE', 50K are 'DELETED'
+-- Regular index on status includes ALL rows:
+CREATE INDEX IX_Orders_Status ON Orders (status);
+-- Index size: 1M entries, low selectivity for 'ACTIVE'
+```
+
+**The Solution** (Filtered Index):
+```sql
+-- SQL Server
+CREATE INDEX IX_Orders_Active_Customer  
+ON Orders (customer_id, created_at)
+WHERE status != 'DELETED';                    -- ← Only index active orders
+
+-- PostgreSQL  
+CREATE INDEX ix_orders_active_customer
+ON orders (customer_id, created_at)  
+WHERE status != 'DELETED';
+
+-- MySQL (doesn't support filtered indexes directly)
+-- Use partitioning or application-level filtering instead
+```
+
+**Benefits**:
+- ✅ Smaller index size → faster seeks, less storage
+- ✅ Better selectivity → optimizer chooses index more often
+- ✅ Reduced maintenance overhead → fewer rows to update
+- ✅ More specific statistics → better query plans
+
+**Common Use Cases**:
+```sql
+-- Logical deletion pattern
+WHERE is_deleted = 0
+
+-- Status filtering  
+WHERE status IN ('ACTIVE', 'PENDING')
+
+-- Time-based filtering
+WHERE created_at >= '2023-01-01'
+
+-- Null filtering
+WHERE email IS NOT NULL
+```
+
+**When to Use**:
+- Logical deletion (soft deletes)
+- Status-based filtering with clear patterns
+- Time-partitioned data
+- Sparse columns (many NULLs)
+
+### 8.5) Unique Index vs Unique Constraint
+
+**Definition**: Enforces uniqueness of values, can be implemented as clustered or non-clustered.
+
+#### Unique Index:
+```sql
+-- Creates underlying unique B+Tree index
+CREATE UNIQUE INDEX IX_Orders_OrderNumber ON Orders (order_number);
+CREATE UNIQUE INDEX IX_Users_Email ON Users (email);
+
+-- Can be composite
+CREATE UNIQUE INDEX IX_UserRoles_UserRole ON UserRoles (user_id, role_id);
+
+-- Can be clustered (SQL Server)
+CREATE UNIQUE CLUSTERED INDEX IX_Orders_Clustered ON Orders (customer_id, created_at);
+```
+
+#### Unique Constraint:
+```sql
+-- Creates both constraint AND underlying unique index
+ALTER TABLE Orders ADD CONSTRAINT UQ_Orders_OrderNumber UNIQUE (order_number);
+ALTER TABLE Users ADD CONSTRAINT UQ_Users_Email UNIQUE (email);
+
+-- Composite unique constraint
+ALTER TABLE UserRoles ADD CONSTRAINT UQ_UserRoles_UserRole UNIQUE (user_id, role_id);
+```
+
+**Key Differences**:
+
+| Aspect | Unique Index | Unique Constraint |
+|--------|--------------|-------------------|
+| **Purpose** | Performance tool that happens to enforce uniqueness | Business rule enforcement |
+| **Metadata** | Index-focused | Constraint-focused |
+| **Foreign Keys** | Cannot be referenced | Can be referenced by FKs |
+| **Naming** | Developer chooses | System may auto-generate |
+| **Dropping** | DROP INDEX | DROP CONSTRAINT |
+
+**Performance Characteristics**:
+- ✅ Fast lookups (same as regular index)
+- ✅ Automatic uniqueness validation
+- ❌ Slightly slower writes (uniqueness check overhead)
+
+**Examples**:
+```sql
+-- Business email uniqueness
+CREATE UNIQUE INDEX IX_Users_Email ON Users (email);
+
+-- Composite uniqueness (user can have each role only once)
+CREATE UNIQUE INDEX IX_UserRoles ON UserRoles (user_id, role_id);
+
+-- Clustered unique index (SQL Server)
+CREATE UNIQUE CLUSTERED INDEX IX_Products_SKU ON Products (sku);
+```
+
+**When to Use**:
+- **Unique Index**: Performance-focused, developer control over naming
+- **Unique Constraint**: Business rule enforcement, when other tables need to reference it
 
 ## 9) Choosing a Good Clustering Key
 
