@@ -1,5 +1,8 @@
 # 📘 MySQL Indexing Guide
 
+# This concept is specially arised when i am solving LC 595
+So, i solved intially with covering index(composite) and then realised that composite indexing usually doesnt go well with 'OR' operator we usually do single col indexing for mutiple cols and let sql decide the the merge indexing and to be more clear we can use union operator and write 2 diff queries this is for question 595. and more optimised is union all + distinct or group by (no de duplication and quicker) but you need to explicity take care of duplicates.
+
 A complete guide to understanding **when and how to use indexes in MySQL**. Covers single, composite, covering indexes, index merge, OR vs UNION, and rules for ordering.
 
 ---
