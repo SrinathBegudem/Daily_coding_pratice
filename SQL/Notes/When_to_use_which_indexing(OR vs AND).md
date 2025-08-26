@@ -356,3 +356,103 @@ WHERE customer_id = 123 AND status = 'Shipped';
 * Index merge explanation
 * UNION vs UNION ALL
 * Practical + interview insights
+
+---
+
+## 🔹 9. Ordering with Range + ORDER BY — Guarantees and Gotchas
+
+### Do I need `ORDER BY` if the rows “naturally” come ordered?
+
+* **Yes, always specify `ORDER BY`** when you need deterministic ordering. Without it, SQL does **not** guarantee the returned order—even if today it “looks” sorted due to the chosen index/plan. A future plan (or a different index) may return rows in a different order.
+
+### Why `ORDER BY` can be satisfied by an index (no filesort)
+
+* If your `WHERE` uses only **equalities** on the left columns of a composite index, and your `ORDER BY` uses the **next** column(s) of that same index (same direction), MySQL can read rows already in order.
+
+**Index**
+
+```sql
+CREATE INDEX idx_state_city_hiredate ON Employees(state, city, hire_date);
+```
+
+**Query**
+
+```sql
+SELECT *
+FROM Employees
+WHERE state = 'CA' AND city = 'LA'
+ORDER BY hire_date; -- ✅ No filesort
+```
+
+### What changes when there’s a **range** in `WHERE`
+
+* Once MySQL hits a **range condition** (`>`, `<`, `BETWEEN`, `LIKE 'abc%'`) on a column **before** your `ORDER BY` columns in the index key, it begins a **range scan**. From that point, it can’t also keep rows ordered by **later** columns in the same index → **filesort** needed.
+
+**Index (filter-first)**
+
+```sql
+CREATE INDEX idx_state_city_salary ON Employees(state, city, salary);
+```
+
+**Query**
+
+```sql
+SELECT *
+FROM Employees
+WHERE state='CA' AND city='LA' AND salary>80000
+ORDER BY hire_date;  -- ❌ Filesort (range on salary precedes ORDER BY column)
+```
+
+### Two valid strategies when range ≠ ORDER BY
+
+1. **Favor filtering (range-first)**
+
+   * Index: `[equalities] → [range column]` (e.g., `(state, city, salary)`).
+   * Pro: Fast to find matching rows if the range is selective.
+   * Con: **Filesort** for `ORDER BY`.
+
+2. **Favor ordering (order-first)**
+
+   * Index: `[equalities] → [ORDER BY columns]` (e.g., `(state, city, hire_date)`), rely on **Index Condition Pushdown (ICP)** to filter the range.
+   * Pro: ✅ **No filesort**; can be great with `LIMIT` (early exit).
+   * Con: May scan more rows because the range column isn’t indexed in position.
+
+**Order-first example + LIMIT**
+
+```sql
+CREATE INDEX idx_state_city_hiredate ON Employees(state, city, hire_date DESC);
+
+SELECT *
+FROM Employees
+WHERE state='CA' AND city='LA' AND salary>80000
+ORDER BY hire_date DESC
+LIMIT 50;  -- ✅ No filesort, early-exit after 50 matches
+```
+
+### Best case: range on the **same** column as `ORDER BY`
+
+If your range and `ORDER BY` are on the **same** column, you can avoid filesort:
+
+```sql
+CREATE INDEX idx_state_city_hiredate ON Employees(state, city, hire_date);
+
+SELECT *
+FROM Employees
+WHERE state='CA' AND city='LA' AND hire_date>=DATE('2024-01-01')
+ORDER BY hire_date;  -- ✅ No filesort (range and order share the same key)
+```
+
+### Quick checklist (interview-ready)
+
+* List predicates as **equality vs range**; list `ORDER BY` columns.
+* If **range and order are on the same column(s)** → index `[equalities] → [that column]` → ✅ no filesort.
+* If **range is on a different column** than `ORDER BY`:
+
+  * **Filter-first**: `[equalities] → [range]` → expect **filesort**.
+  * **Order-first**: `[equalities] → [ORDER BY]` + **ICP** → no filesort, more scanning.
+* For **top‑N** pages → prefer order-first + `LIMIT` for early exit.
+* **Always** confirm with `EXPLAIN`:
+
+  * `Using filesort` → sort happening.
+  * `Using index condition` → ICP filtering.
+  * Absence of `Using filesort` when ordered → index satisfies `ORDER BY`.
