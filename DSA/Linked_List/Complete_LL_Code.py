@@ -53,6 +53,7 @@ class LinkedList:
         self._size += 1 # increase the _size of ll
     
     #-------internal--------
+    # The functions begin with _ is a private method 
     def _node_at(self,index):
         """
         Return the node at index (0 based indexing)
@@ -120,13 +121,39 @@ class LinkedList:
         if index == 0:
             return self.pop_front()
         prev = self._node_at(index - 1)
-        node = prev.next
-        prev.next = node.next
-        node.next = None
-
-
-
-    def remove_at(self, index, val):
+        target = prev.next
+        prev.next = target.next 
+        if target is self.tail:
+            self.tail = prev
+        # In python the below line is not required as gc will 
+        #automatically delete that var which are not connected 
+        #through the head but explicity mention is good pratice.
+        target.next = None
+        self._size -= 1
+        return target.val
+    
+    #--------utilities----------
+    def size(self):
+        """Return current length in O(1)."""
+        return self._size
+    def __len__(self):
+        return self._size
+    def to_list(self):
+        """
+        Convert the ll to list
+        """
+        out = []
+        cur = self.head
+        while cur:
+            out.append(cur.val)
+            cur = cur.next
+        return out 
+    def __repr__(self):
+        return "->".join(map(str,self.to_list())) if self._size else None
+    
+    
+    
+    
 
     
 
