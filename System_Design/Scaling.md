@@ -22,41 +22,19 @@
 
 **Scaling** (also called **Scalability**) is a system's ability to handle increased workload - more users, more data, or more transactions - while maintaining performance and reliability.
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; margin: 20px 0;">
-<h3>🎯 Simple Definition</h3>
-<p><strong>Scaling = Growing your system to handle more load without breaking</strong></p>
-</div>
+> 🎯 **Simple Definition**: Scaling = Growing your system to handle more load without breaking
 
 ### Real-World Analogy
 
 Think of scaling like managing a restaurant:
 
-```html
-<div style="display: flex; justify-content: space-between; margin: 20px 0;">
-  
-  <div style="background: #ffeb3b; padding: 15px; border-radius: 8px; width: 45%; text-align: center;">
-    <h4>🏪 Small Restaurant</h4>
-    <p><strong>10 customers/day</strong></p>
-    <ul style="text-align: left;">
-      <li>1 chef</li>
-      <li>1 waiter</li>
-      <li>5 tables</li>
-    </ul>
-  </div>
-
-  <div style="font-size: 30px; align-self: center;">→</div>
-
-  <div style="background: #4caf50; color: white; padding: 15px; border-radius: 8px; width: 45%; text-align: center;">
-    <h4>🏬 Large Restaurant Chain</h4>
-    <p><strong>10,000 customers/day</strong></p>
-    <ul style="text-align: left;">
-      <li>20 chefs</li>
-      <li>30 waiters</li>
-      <li>100 tables</li>
-    </ul>
-  </div>
-
-</div>
+```mermaid
+graph LR
+    A[🏪 Small Restaurant<br/>10 customers/day<br/>• 1 chef<br/>• 1 waiter<br/>• 5 tables] 
+    A -->|Growth| B[🏬 Large Restaurant Chain<br/>10,000 customers/day<br/>• 20 chefs<br/>• 30 waiters<br/>• 100 tables]
+    
+    style A fill:#ffeb3b,stroke:#333,stroke-width:2px
+    style B fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 Similarly, your software system needs to grow to handle more users!
@@ -67,76 +45,42 @@ Similarly, your software system needs to grow to handle more users!
 
 ### 📈 Growth Challenges
 
-<div style="background: #f44336; color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>❌ What Happens Without Scaling</h4>
-<ul>
-<li><strong>Slow Response Times</strong>: Website takes 10+ seconds to load</li>
-<li><strong>System Crashes</strong>: Server goes down during peak traffic</li>
-<li><strong>Poor User Experience</strong>: Users abandon your app</li>
-<li><strong>Revenue Loss</strong>: Amazon loses $1.6B for every minute of downtime</li>
-</ul>
-</div>
+```mermaid
+graph TD
+    A[System Without Scaling] --> B[Slow Response Times<br/>>10 seconds]
+    A --> C[System Crashes<br/>During peak traffic]
+    A --> D[Poor User Experience<br/>Users abandon app]
+    A --> E[Revenue Loss<br/>Amazon: $1.6B/min downtime]
+    
+    style A fill:#f44336,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style C fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style D fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style E fill:#ffcdd2,stroke:#333,stroke-width:1px
+```
 
 ### 🎯 Business Drivers for Scaling
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+| **📊 User Growth** | **💾 Data Growth** |
+|---|---|
+| • Instagram: 0 → 1B users | • YouTube: 500 hours uploaded/minute |
+| • TikTok: 0 → 1B users in 3 years | • Facebook: 4 petabytes of data/day |
+| • ChatGPT: 0 → 100M users in 2 months | • Twitter: 500M tweets/day |
 
-<div style="background: #2196f3; color: white; padding: 15px; border-radius: 8px;">
-<h4>📊 User Growth</h4>
-<p><strong>Examples:</strong></p>
-<ul>
-<li>Instagram: 0 → 1B users</li>
-<li>TikTok: 0 → 1B users in 3 years</li>
-<li>ChatGPT: 0 → 100M users in 2 months</li>
-</ul>
-</div>
-
-<div style="background: #9c27b0; color: white; padding: 15px; border-radius: 8px;">
-<h4>💾 Data Growth</h4>
-<p><strong>Examples:</strong></p>
-<ul>
-<li>YouTube: 500 hours uploaded/minute</li>
-<li>Facebook: 4 petabytes of data/day</li>
-<li>Twitter: 500M tweets/day</li>
-</ul>
-</div>
-
-<div style="background: #ff9800; color: white; padding: 15px; border-radius: 8px;">
-<h4>⚡ Performance Requirements</h4>
-<p><strong>User Expectations:</strong></p>
-<ul>
-<li>Page load: &lt;100ms</li>
-<li>API response: &lt;50ms</li>
-<li>99.99% uptime (4 min downtime/month)</li>
-</ul>
-</div>
-
-<div style="background: #4caf50; color: white; padding: 15px; border-radius: 8px;">
-<h4>💰 Cost Efficiency</h4>
-<p><strong>Goals:</strong></p>
-<ul>
-<li>Scale up during peak hours</li>
-<li>Scale down during low traffic</li>
-<li>Pay only for what you use</li>
-</ul>
-</div>
-
-</div>
+| **⚡ Performance Requirements** | **💰 Cost Efficiency** |
+|---|---|
+| • Page load: <100ms | • Scale up during peak hours |
+| • API response: <50ms | • Scale down during low traffic |
+| • 99.99% uptime (4 min downtime/month) | • Pay only for what you use |
 
 ### 📊 Scaling Metrics to Track
 
-```html
-<div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 5px solid #4caf50;">
-<h4>🎯 Key Performance Indicators (KPIs)</h4>
-<ul>
-<li><strong>Response Time</strong>: How fast your system responds</li>
-<li><strong>Throughput</strong>: Requests handled per second (RPS)</li>
-<li><strong>Concurrent Users</strong>: Users active at the same time</li>
-<li><strong>Error Rate</strong>: Percentage of failed requests</li>
-<li><strong>Resource Utilization</strong>: CPU, Memory, Disk usage</li>
-</ul>
-</div>
-```
+> 🎯 **Key Performance Indicators (KPIs)**
+> - **Response Time**: How fast your system responds
+> - **Throughput**: Requests handled per second (RPS)
+> - **Concurrent Users**: Users active at the same time
+> - **Error Rate**: Percentage of failed requests
+> - **Resource Utilization**: CPU, Memory, Disk usage
 
 ---
 
@@ -144,21 +88,20 @@ Similarly, your software system needs to grow to handle more users!
 
 There are two fundamental approaches to scaling any system:
 
-<div style="display: flex; justify-content: space-between; margin: 30px 0;">
-
-<div style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); padding: 20px; border-radius: 15px; width: 45%; text-align: center;">
-<h3>⬆️ Vertical Scaling</h3>
-<p><strong>"Scale Up"</strong></p>
-<p>Make your existing machine more powerful</p>
-</div>
-
-<div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); padding: 20px; border-radius: 15px; width: 45%; text-align: center;">
-<h3>➡️ Horizontal Scaling</h3>
-<p><strong>"Scale Out"</strong></p>
-<p>Add more machines to share the work</p>
-</div>
-
-</div>
+```mermaid
+graph LR
+    A[Scaling Approaches] --> B[⬆️ Vertical Scaling<br/>Scale Up<br/>More powerful machine]
+    A --> C[➡️ Horizontal Scaling<br/>Scale Out<br/>More machines]
+    
+    B --> D[💪 Add CPU, RAM, Storage<br/>to existing server]
+    C --> E[🔄 Add more servers<br/>with load balancer]
+    
+    style A fill:#667eea,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ff9a9e,stroke:#333,stroke-width:2px
+    style C fill:#a8edea,stroke:#333,stroke-width:2px
+    style D fill:#fecfef,stroke:#333,stroke-width:1px
+    style E fill:#fed6e3,stroke:#333,stroke-width:1px
+```
 
 ---
 
@@ -168,138 +111,72 @@ There are two fundamental approaches to scaling any system:
 
 ### 🔧 How Vertical Scaling Works
 
-```html
-<div style="background: #fff3e0; padding: 20px; border-radius: 10px; margin: 20px 0;">
-<h4>Server Upgrade Process:</h4>
-
-<div style="display: flex; align-items: center; justify-content: space-between; margin: 20px 0;">
-  
-  <div style="background: #ffcdd2; padding: 15px; border-radius: 8px; text-align: center; width: 30%;">
-    <h5>🖥️ Before Upgrade</h5>
-    <ul style="text-align: left; font-size: 14px;">
-      <li>2 CPU cores</li>
-      <li>4 GB RAM</li>
-      <li>100 GB SSD</li>
-      <li>1 Gbps network</li>
-    </ul>
-    <p><strong>Handles: 1,000 users</strong></p>
-  </div>
-
-  <div style="font-size: 30px; color: #f44336;">⬆️</div>
-
-  <div style="background: #c8e6c9; padding: 15px; border-radius: 8px; text-align: center; width: 30%;">
-    <h5>🚀 After Upgrade</h5>
-    <ul style="text-align: left; font-size: 14px;">
-      <li>8 CPU cores</li>
-      <li>32 GB RAM</li>
-      <li>1 TB SSD</li>
-      <li>10 Gbps network</li>
-    </ul>
-    <p><strong>Handles: 8,000 users</strong></p>
-  </div>
-
-</div>
-</div>
+```mermaid
+graph TD
+    A[🖥️ Original Server<br/>2 CPU cores<br/>4 GB RAM<br/>100 GB SSD<br/>Handles: 1,000 users] 
+    A -->|Upgrade Hardware| B[🚀 Upgraded Server<br/>8 CPU cores<br/>32 GB RAM<br/>1 TB SSD<br/>Handles: 8,000 users]
+    
+    style A fill:#ffcdd2,stroke:#333,stroke-width:2px
+    style B fill:#c8e6c9,stroke:#333,stroke-width:2px
 ```
 
 ### 💰 Real-World Examples of Vertical Scaling
 
-<div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>☁️ Cloud Platform Examples</h4>
-<ul>
-<li><strong>AWS EC2</strong>: t3.micro → t3.2xlarge (1 vCPU → 8 vCPU)</li>
-<li><strong>Google Cloud</strong>: n1-standard-1 → n1-standard-16</li>
-<li><strong>Azure</strong>: Standard_B1s → Standard_B16ms</li>
-</ul>
-</div>
+> ☁️ **Cloud Platform Examples**
+> - **AWS EC2**: t3.micro → t3.2xlarge (1 vCPU → 8 vCPU)
+> - **Google Cloud**: n1-standard-1 → n1-standard-16
+> - **Azure**: Standard_B1s → Standard_B16ms
 
 ### ✅ Advantages of Vertical Scaling
 
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>🎯 Pros</h4>
-<ul>
-<li><strong>Simple Implementation</strong>: No code changes required</li>
-<li><strong>No Architectural Complexity</strong>: Keep existing design</li>
-<li><strong>Better for Single-threaded Apps</strong>: More CPU power helps</li>
-<li><strong>Consistent Performance</strong>: No network latency between components</li>
-<li><strong>ACID Compliance</strong>: Easier to maintain database consistency</li>
-<li><strong>Quick Solution</strong>: Can be done in minutes</li>
-</ul>
-</div>
+> 🎯 **Pros**
+> - ✅ **Simple Implementation**: No code changes required
+> - ✅ **No Architectural Complexity**: Keep existing design
+> - ✅ **Better for Single-threaded Apps**: More CPU power helps
+> - ✅ **Consistent Performance**: No network latency between components
+> - ✅ **ACID Compliance**: Easier to maintain database consistency
+> - ✅ **Quick Solution**: Can be done in minutes
 
 ### ❌ Disadvantages of Vertical Scaling
 
-<div style="background: #ffebee; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>⚠️ Cons</h4>
-<ul>
-<li><strong>Hardware Limits</strong>: Can't exceed maximum CPU/RAM available</li>
-<li><strong>Single Point of Failure</strong>: If server fails, everything goes down</li>
-<li><strong>Expensive</strong>: High-end servers cost exponentially more</li>
-<li><strong>Downtime Required</strong>: Need to restart server for upgrades</li>
-<li><strong>Limited Scalability</strong>: Eventually hit the ceiling</li>
-<li><strong>Vendor Lock-in</strong>: Dependent on specific hardware</li>
-</ul>
-</div>
+> ⚠️ **Cons**
+> - ❌ **Hardware Limits**: Can't exceed maximum CPU/RAM available
+> - ❌ **Single Point of Failure**: If server fails, everything goes down
+> - ❌ **Expensive**: High-end servers cost exponentially more
+> - ❌ **Downtime Required**: Need to restart server for upgrades
+> - ❌ **Limited Scalability**: Eventually hit the ceiling
+> - ❌ **Vendor Lock-in**: Dependent on specific hardware
 
 ### 📊 Vertical Scaling Cost Analysis
 
-```html
-<div style="background: #fff8e1; padding: 20px; border-radius: 10px; border-left: 5px solid #ff9800;">
-<h4>💸 Cost Progression (AWS EC2 Example)</h4>
-<table style="width: 100%; border-collapse: collapse;">
-<tr style="background: #ffcc02; font-weight: bold;">
-<td style="padding: 10px; border: 1px solid #ddd;">Instance Type</td>
-<td style="padding: 10px; border: 1px solid #ddd;">vCPU</td>
-<td style="padding: 10px; border: 1px solid #ddd;">RAM</td>
-<td style="padding: 10px; border: 1px solid #ddd;">Cost/Month</td>
-<td style="padding: 10px; border: 1px solid #ddd;">Performance</td>
-</tr>
-<tr>
-<td style="padding: 10px; border: 1px solid #ddd;">t3.micro</td>
-<td style="padding: 10px; border: 1px solid #ddd;">2</td>
-<td style="padding: 10px; border: 1px solid #ddd;">1 GB</td>
-<td style="padding: 10px; border: 1px solid #ddd;">$8</td>
-<td style="padding: 10px; border: 1px solid #ddd;">1x</td>
-</tr>
-<tr>
-<td style="padding: 10px; border: 1px solid #ddd;">t3.large</td>
-<td style="padding: 10px; border: 1px solid #ddd;">2</td>
-<td style="padding: 10px; border: 1px solid #ddd;">8 GB</td>
-<td style="padding: 10px; border: 1px solid #ddd;">$67</td>
-<td style="padding: 10px; border: 1px solid #ddd;">4x</td>
-</tr>
-<tr>
-<td style="padding: 10px; border: 1px solid #ddd;">t3.2xlarge</td>
-<td style="padding: 10px; border: 1px solid #ddd;">8</td>
-<td style="padding: 10px; border: 1px solid #ddd;">32 GB</td>
-<td style="padding: 10px; border: 1px solid #ddd;">$270</td>
-<td style="padding: 10px; border: 1px solid #ddd;">16x</td>
-</tr>
-<tr style="background: #ffcdd2;">
-<td style="padding: 10px; border: 1px solid #ddd;">r5.24xlarge</td>
-<td style="padding: 10px; border: 1px solid #ddd;">96</td>
-<td style="padding: 10px; border: 1px solid #ddd;">768 GB</td>
-<td style="padding: 10px; border: 1px solid #ddd;">$4,838</td>
-<td style="padding: 10px; border: 1px solid #ddd;">100x+</td>
-</tr>
-</table>
-<p><strong>Notice:</strong> Cost increases exponentially, not linearly!</p>
-</div>
-```
+💸 **Cost Progression (AWS EC2 Example)**
+
+| Instance Type | vCPU | RAM | Cost/Month | Performance |
+|---------------|------|-----|------------|-------------|
+| t3.micro | 2 | 1 GB | $8 | 1x |
+| t3.large | 2 | 8 GB | $67 | 4x |
+| t3.2xlarge | 8 | 32 GB | $270 | 16x |
+| **r5.24xlarge** | **96** | **768 GB** | **$4,838** | **100x+** |
+
+> **Notice**: Cost increases exponentially, not linearly!
 
 ### 🎯 When to Use Vertical Scaling
 
-<div style="background: #e1f5fe; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>👍 Best Use Cases</h4>
-<ul>
-<li><strong>Small to Medium Applications</strong>: Less than 10,000 concurrent users</li>
-<li><strong>Databases</strong>: RDBMS that need ACID properties</li>
-<li><strong>Legacy Applications</strong>: Cannot be easily modified for distributed architecture</li>
-<li><strong>Single-threaded Workloads</strong>: Applications that can't use multiple cores</li>
-<li><strong>Quick Fixes</strong>: When you need immediate performance boost</li>
-<li><strong>Monolithic Applications</strong>: All components in one codebase</li>
-</ul>
-</div>
+```mermaid
+graph TD
+    A[Consider Vertical Scaling] --> B[📏 Small-Medium Apps<br/><10K users]
+    A --> C[🗄️ Database-heavy<br/>ACID compliance needed]
+    A --> D[🏗️ Legacy Applications<br/>Can't modify architecture]
+    A --> E[⚡ Quick Fix Needed<br/>Urgent performance boost]
+    A --> F[💰 Limited Budget<br/>Initially]
+    
+    style A fill:#2196f3,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#e1f5fe,stroke:#333,stroke-width:1px
+    style C fill:#e1f5fe,stroke:#333,stroke-width:1px
+    style D fill:#e1f5fe,stroke:#333,stroke-width:1px
+    style E fill:#e1f5fe,stroke:#333,stroke-width:1px
+    style F fill:#e1f5fe,stroke:#333,stroke-width:1px
+```
 
 ---
 
@@ -309,170 +186,103 @@ There are two fundamental approaches to scaling any system:
 
 ### 🔧 How Horizontal Scaling Works
 
-```html
-<div style="background: #f3e5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
-<h4>Adding Servers to Handle Load:</h4>
-
-<div style="margin: 20px 0;">
-<h5>Step 1: Single Server (Baseline)</h5>
-<div style="background: #ffcdd2; padding: 15px; border-radius: 8px; text-align: center; margin: 10px 0;">
-<strong>🖥️ Server 1</strong><br>
-Handles 100% of traffic<br>
-<em>Performance: Getting slow at peak</em>
-</div>
-</div>
-
-<div style="margin: 20px 0;">
-<h5>Step 2: Add Load Balancer + More Servers</h5>
-<div style="display: flex; justify-content: space-between; align-items: center;">
-  
-  <div style="background: #bbdefb; padding: 15px; border-radius: 8px; text-align: center; width: 20%;">
-    <strong>🔄 Load Balancer</strong><br>
-    <small>Distributes traffic</small>
-  </div>
-  
-  <div style="font-size: 20px;">→</div>
-  
-  <div style="display: flex; justify-content: space-between; width: 70%;">
-    <div style="background: #c8e6c9; padding: 15px; border-radius: 8px; text-align: center; width: 30%;">
-      <strong>🖥️ Server 1</strong><br>
-      <small>33% traffic</small>
-    </div>
-    <div style="background: #c8e6c9; padding: 15px; border-radius: 8px; text-align: center; width: 30%;">
-      <strong>🖥️ Server 2</strong><br>
-      <small>33% traffic</small>
-    </div>
-    <div style="background: #c8e6c9; padding: 15px; border-radius: 8px; text-align: center; width: 30%;">
-      <strong>🖥️ Server 3</strong><br>
-      <small>33% traffic</small>
-    </div>
-  </div>
-  
-</div>
-<p style="text-align: center;"><em>Each server now handles manageable load</em></p>
-</div>
-
-</div>
+```mermaid
+graph TD
+    A[Single Server Setup] --> B[🖥️ Server 1<br/>100% traffic<br/>Getting overloaded]
+    
+    C[Horizontal Scaling Setup] --> D[🔄 Load Balancer]
+    D --> E[🖥️ Server 1<br/>33% traffic]
+    D --> F[🖥️ Server 2<br/>33% traffic] 
+    D --> G[🖥️ Server 3<br/>33% traffic]
+    
+    style A fill:#f44336,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style C fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#bbdefb,stroke:#333,stroke-width:1px
+    style E fill:#c8e6c9,stroke:#333,stroke-width:1px
+    style F fill:#c8e6c9,stroke:#333,stroke-width:1px
+    style G fill:#c8e6c9,stroke:#333,stroke-width:1px
 ```
 
 ### 🏗️ Components Needed for Horizontal Scaling
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-<h4>🔄 Load Balancer</h4>
-<p><strong>Purpose:</strong> Distribute incoming requests across multiple servers</p>
-<p><em>(Detailed in Load Balancing README)</em></p>
-</div>
-
-<div style="background: #fff3e0; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
-<h4>🗄️ Shared Database</h4>
-<p><strong>Purpose:</strong> All servers access same data</p>
-<p><em>(Detailed in Database Scaling README)</em></p>
-</div>
-
-<div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3;">
-<h4>📦 Session Storage</h4>
-<p><strong>Purpose:</strong> Store user sessions externally (Redis/Memcached)</p>
-<p><em>(Detailed in Caching README)</em></p>
-</div>
-
-<div style="background: #fce4ec; padding: 15px; border-radius: 8px; border-left: 4px solid #e91e63;">
-<h4>📊 Monitoring</h4>
-<p><strong>Purpose:</strong> Track health of all servers</p>
-<p><em>(Detailed in Monitoring README)</em></p>
-</div>
-
-</div>
+```mermaid
+graph LR
+    A[Horizontal Scaling<br/>Components] --> B[🔄 Load Balancer<br/>Distribute requests]
+    A --> C[🗄️ Shared Database<br/>All servers access same data]
+    A --> D[📦 Session Storage<br/>External storage Redis/Memcached]
+    A --> E[📊 Monitoring<br/>Track server health]
+    
+    B --> F[Details in Load<br/>Balancing README]
+    C --> G[Details in Database<br/>Scaling README]
+    D --> H[Details in<br/>Caching README]
+    E --> I[Details in<br/>Monitoring README]
+    
+    style A fill:#9c27b0,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style C fill:#fff3e0,stroke:#333,stroke-width:1px
+    style D fill:#e3f2fd,stroke:#333,stroke-width:1px
+    style E fill:#fce4ec,stroke:#333,stroke-width:1px
+```
 
 ### 💰 Real-World Examples of Horizontal Scaling
 
-<div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>🌍 Major Companies Using Horizontal Scaling</h4>
-<ul>
-<li><strong>Netflix</strong>: 1000+ microservices across thousands of servers</li>
-<li><strong>Google</strong>: Millions of servers in data centers worldwide</li>
-<li><strong>Facebook</strong>: Auto-scales from thousands to tens of thousands of servers during peak</li>
-<li><strong>Amazon</strong>: E-commerce platform scales to handle Black Friday traffic spikes</li>
-</ul>
-</div>
+> 🌍 **Major Companies Using Horizontal Scaling**
+> - **Netflix**: 1000+ microservices across thousands of servers
+> - **Google**: Millions of servers in data centers worldwide  
+> - **Facebook**: Auto-scales from thousands to tens of thousands of servers during peak
+> - **Amazon**: E-commerce platform scales to handle Black Friday traffic spikes
 
 ### ✅ Advantages of Horizontal Scaling
 
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>🎯 Pros</h4>
-<ul>
-<li><strong>No Hardware Limits</strong>: Can keep adding servers indefinitely</li>
-<li><strong>High Availability</strong>: If one server fails, others continue working</li>
-<li><strong>Cost Effective</strong>: Use cheaper commodity hardware</li>
-<li><strong>Fault Tolerance</strong>: System survives individual component failures</li>
-<li><strong>Geographic Distribution</strong>: Servers can be in different regions</li>
-<li><strong>Elastic Scaling</strong>: Add/remove servers based on demand</li>
-<li><strong>Better Resource Utilization</strong>: Spread load efficiently</li>
-</ul>
-</div>
+> 🎯 **Pros**
+> - ✅ **No Hardware Limits**: Can keep adding servers indefinitely
+> - ✅ **High Availability**: If one server fails, others continue working
+> - ✅ **Cost Effective**: Use cheaper commodity hardware
+> - ✅ **Fault Tolerance**: System survives individual component failures
+> - ✅ **Geographic Distribution**: Servers can be in different regions
+> - ✅ **Elastic Scaling**: Add/remove servers based on demand
+> - ✅ **Better Resource Utilization**: Spread load efficiently
 
 ### ❌ Disadvantages of Horizontal Scaling
 
-<div style="background: #ffebee; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>⚠️ Cons</h4>
-<ul>
-<li><strong>Complex Architecture</strong>: Need load balancers, distributed systems</li>
-<li><strong>Network Latency</strong>: Communication between servers takes time</li>
-<li><strong>Data Consistency Challenges</strong>: Harder to maintain consistent state</li>
-<li><strong>More Moving Parts</strong>: More things that can go wrong</li>
-<li><strong>Operational Overhead</strong>: Need to manage many servers</li>
-<li><strong>Application Changes Required</strong>: Code must be stateless</li>
-<li><strong>Initial Complexity</strong>: Takes time to set up properly</li>
-</ul>
-</div>
+> ⚠️ **Cons**
+> - ❌ **Complex Architecture**: Need load balancers, distributed systems
+> - ❌ **Network Latency**: Communication between servers takes time
+> - ❌ **Data Consistency Challenges**: Harder to maintain consistent state
+> - ❌ **More Moving Parts**: More things that can go wrong
+> - ❌ **Operational Overhead**: Need to manage many servers
+> - ❌ **Application Changes Required**: Code must be stateless
+> - ❌ **Initial Complexity**: Takes time to set up properly
 
 ### 📊 Horizontal Scaling Cost Analysis
 
-```html
-<div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 5px solid #4caf50;">
-<h4>💰 Cost Efficiency Example</h4>
-<table style="width: 100%; border-collapse: collapse;">
-<tr style="background: #4caf50; color: white; font-weight: bold;">
-<td style="padding: 10px; border: 1px solid #ddd;">Approach</td>
-<td style="padding: 10px; border: 1px solid #ddd;">Configuration</td>
-<td style="padding: 10px; border: 1px solid #ddd;">Total Cost/Month</td>
-<td style="padding: 10px; border: 1px solid #ddd;">Handles Users</td>
-<td style="padding: 10px; border: 1px solid #ddd;">Availability</td>
-</tr>
-<tr>
-<td style="padding: 10px; border: 1px solid #ddd;">Vertical</td>
-<td style="padding: 10px; border: 1px solid #ddd;">1x r5.24xlarge</td>
-<td style="padding: 10px; border: 1px solid #ddd;">$4,838</td>
-<td style="padding: 10px; border: 1px solid #ddd;">50,000</td>
-<td style="padding: 10px; border: 1px solid #ddd;">Single point of failure</td>
-</tr>
-<tr style="background: #e8f5e8;">
-<td style="padding: 10px; border: 1px solid #ddd;">Horizontal</td>
-<td style="padding: 10px; border: 1px solid #ddd;">10x m5.2xlarge</td>
-<td style="padding: 10px; border: 1px solid #ddd;">$2,760</td>
-<td style="padding: 10px; border: 1px solid #ddd;">50,000</td>
-<td style="padding: 10px; border: 1px solid #ddd;">High availability</td>
-</tr>
-</table>
-<p><strong>Result:</strong> Horizontal scaling costs 43% less with better availability!</p>
-</div>
-```
+💰 **Cost Efficiency Example**
+
+| Approach | Configuration | Total Cost/Month | Handles Users | Availability |
+|----------|---------------|------------------|---------------|--------------|
+| Vertical | 1x r5.24xlarge | $4,838 | 50,000 | Single point of failure |
+| **Horizontal** | **10x m5.2xlarge** | **$2,760** | **50,000** | **High availability** |
+
+> **Result**: Horizontal scaling costs 43% less with better availability!
 
 ### 🎯 When to Use Horizontal Scaling
 
-<div style="background: #e1f5fe; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>👍 Best Use Cases</h4>
-<ul>
-<li><strong>Large Scale Applications</strong>: 10,000+ concurrent users</li>
-<li><strong>Stateless Applications</strong>: Web servers, API services</li>
-<li><strong>High Availability Requirements</strong>: 99.9%+ uptime needed</li>
-<li><strong>Variable Traffic Patterns</strong>: Traffic spikes and valleys</li>
-<li><strong>Global Applications</strong>: Users across different regions</li>
-<li><strong>Microservices Architecture</strong>: Independent service scaling</li>
-<li><strong>Cloud-Native Applications</strong>: Built for cloud platforms</li>
-</ul>
-</div>
+```mermaid
+graph TD
+    A[Consider Horizontal Scaling] --> B[📈 Large Scale Apps<br/>10K+ users]
+    A --> C[🌍 Global Applications<br/>Users worldwide]
+    A --> D[⏰ High Availability<br/>99.9%+ uptime needed]
+    A --> E[📊 Variable Traffic<br/>Spikes and valleys]
+    A --> F[🏗️ Modern Architecture<br/>Microservices, cloud-native]
+    
+    style A fill:#4caf50,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style C fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style D fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style E fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style F fill:#e8f5e8,stroke:#333,stroke-width:1px
+```
 
 ---
 
@@ -480,107 +290,47 @@ Handles 100% of traffic<br>
 
 ### 📊 Detailed Comparison Table
 
-```html
-<div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin: 20px 0;">
-<table style="width: 100%; border-collapse: collapse;">
-<tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: bold;">
-<td style="padding: 15px; border: 1px solid #ddd;">Aspect</td>
-<td style="padding: 15px; border: 1px solid #ddd;">Vertical Scaling ⬆️</td>
-<td style="padding: 15px; border: 1px solid #ddd;">Horizontal Scaling ➡️</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Definition</td>
-<td style="padding: 12px; border: 1px solid #ddd;">Add more power to existing machine</td>
-<td style="padding: 12px; border: 1px solid #ddd;">Add more machines to system</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Implementation</td>
-<td style="padding: 12px; border: 1px solid #ddd;">Upgrade CPU, RAM, Storage</td>
-<td style="padding: 12px; border: 1px solid #ddd;">Add servers + Load balancer</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Complexity</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ Simple (No code changes)</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #ffcdd2;">❌ Complex (Architecture changes)</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Cost (Small Scale)</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ Lower initial cost</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #ffcdd2;">❌ Higher initial setup</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Cost (Large Scale)</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #ffcdd2;">❌ Exponentially expensive</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ Linear cost increase</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Scalability Limits</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #ffcdd2;">❌ Hardware ceiling</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ Nearly unlimited</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Availability</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #ffcdd2;">❌ Single point of failure</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ High availability</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Performance</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ No network overhead</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #fff3e0;">⚠️ Network latency</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Data Consistency</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ Easy to maintain</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #ffcdd2;">❌ Complex to maintain</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Downtime</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #ffcdd2;">❌ Required for upgrades</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ Zero downtime scaling</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; background: #f5f5f5;">Geographic Distribution</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #ffcdd2;">❌ Single location</td>
-<td style="padding: 12px; border: 1px solid #ddd; background: #c8e6c9;">✅ Multiple regions</td>
-</tr>
-</table>
-</div>
-```
+| Aspect | Vertical Scaling ⬆️ | Horizontal Scaling ➡️ |
+|--------|-------------------|----------------------|
+| **Definition** | Add more power to existing machine | Add more machines to system |
+| **Implementation** | Upgrade CPU, RAM, Storage | Add servers + Load balancer |
+| **Complexity** | ✅ Simple (No code changes) | ❌ Complex (Architecture changes) |
+| **Cost (Small Scale)** | ✅ Lower initial cost | ❌ Higher initial setup |
+| **Cost (Large Scale)** | ❌ Exponentially expensive | ✅ Linear cost increase |
+| **Scalability Limits** | ❌ Hardware ceiling | ✅ Nearly unlimited |
+| **Availability** | ❌ Single point of failure | ✅ High availability |
+| **Performance** | ✅ No network overhead | ⚠️ Network latency |
+| **Data Consistency** | ✅ Easy to maintain | ❌ Complex to maintain |
+| **Downtime** | ❌ Required for upgrades | ✅ Zero downtime scaling |
+| **Geographic Distribution** | ❌ Single location | ✅ Multiple regions |
 
 ### 🎯 Decision Matrix
 
-```html
-<div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); padding: 20px; border-radius: 10px; margin: 20px 0;">
-<h4>🤔 Which Scaling Approach Should You Choose?</h4>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
-<div style="background: #fff; padding: 15px; border-radius: 8px; border: 3px solid #ff9800;">
-<h5>🔼 Choose Vertical Scaling When:</h5>
-<ul>
-<li>📏 <strong>Small-Medium scale</strong> (&lt;10K users)</li>
-<li>⚡ <strong>Quick fix needed</strong> (urgent performance boost)</li>
-<li>🗄️ <strong>Database-heavy</strong> (ACID compliance required)</li>
-<li>🏗️ <strong>Legacy application</strong> (can't modify architecture)</li>
-<li>👥 <strong>Small team</strong> (limited DevOps resources)</li>
-<li>💰 <strong>Limited budget initially</strong></li>
-</ul>
-</div>
-
-<div style="background: #fff; padding: 15px; border-radius: 8px; border: 3px solid #4caf50;">
-<h5>🔄 Choose Horizontal Scaling When:</h5>
-<ul>
-<li>📈 <strong>Large scale</strong> (10K+ users)</li>
-<li>🌍 <strong>Global application</strong> (users worldwide)</li>
-<li>⏰ <strong>High availability</strong> (99.9%+ uptime)</li>
-<li>📊 <strong>Variable traffic</strong> (spikes and valleys)</li>
-<li>🏗️ <strong>Modern architecture</strong> (microservices, cloud-native)</li>
-<li>👥 <strong>Experienced team</strong> (DevOps expertise)</li>
-</ul>
-</div>
-
-</div>
-</div>
+```mermaid
+flowchart TD
+    A[Scaling Decision] --> B{Current Users?}
+    
+    B -->|< 1,000| C{Budget Limited?}
+    C -->|Yes| D[🔼 Vertical Scaling]
+    C -->|No, Planning Growth| E[🔼 Start Vertical<br/>📋 Plan Horizontal]
+    
+    B -->|1,000 - 10,000| F{High Availability Needed?}
+    F -->|Yes| G[➡️ Horizontal Scaling]
+    F -->|No, Simple App| H[🔼 Vertical Scaling]
+    
+    B -->|> 10,000| I{Application Type?}
+    I -->|Global Users| J[➡️ Horizontal + CDN]
+    I -->|Variable Traffic| K[➡️ Horizontal + Auto-scaling]
+    I -->|Enterprise| L[🔄 Hybrid Approach]
+    
+    style A fill:#667eea,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style E fill:#fff3e0,stroke:#333,stroke-width:1px
+    style G fill:#c8e6c9,stroke:#333,stroke-width:1px
+    style H fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style J fill:#c8e6c9,stroke:#333,stroke-width:1px
+    style K fill:#c8e6c9,stroke:#333,stroke-width:1px
+    style L fill:#e1f5fe,stroke:#333,stroke-width:1px
 ```
 
 ---
@@ -591,81 +341,41 @@ Most real-world systems use a combination of both vertical and horizontal scalin
 
 ### 🔄 The Hybrid Strategy
 
-```html
-<div style="background: #f3e5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
-<h4>🎯 Best of Both Worlds: Hybrid Scaling</h4>
-
-<div style="margin: 20px 0;">
-<h5>Phase 1: Start with Vertical Scaling</h5>
-<div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin: 10px 0;">
-<p><strong>Early Stage (0-1K users):</strong></p>
-<ul>
-<li>Single powerful server</li>
-<li>Quick to implement</li>
-<li>Cost-effective for small scale</li>
-</ul>
-</div>
-</div>
-
-<div style="margin: 20px 0;">
-<h5>Phase 2: Add Horizontal Scaling</h5>
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 10px 0;">
-<p><strong>Growth Stage (1K-100K users):</strong></p>
-<ul>
-<li>Multiple powerful servers</li>
-<li>Load balancer introduced</li>
-<li>Database replication</li>
-</ul>
-</div>
-</div>
-
-<div style="margin: 20px 0;">
-<h5>Phase 3: Advanced Horizontal Scaling</h5>
-<div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 10px 0;">
-<p><strong>Scale Stage (100K+ users):</strong></p>
-<ul>
-<li>Microservices architecture</li>
-<li>Auto-scaling groups</li>
-<li>Global distribution</li>
-</ul>
-</div>
-</div>
-
-</div>
+```mermaid
+graph TD
+    A[Hybrid Scaling Evolution] --> B[Phase 1: Start Vertical<br/>0-1K users<br/>Single powerful server]
+    B --> C[Phase 2: Add Horizontal<br/>1K-100K users<br/>Multiple servers + Load balancer]
+    C --> D[Phase 3: Advanced Horizontal<br/>100K+ users<br/>Microservices + Auto-scaling]
+    
+    B --> E[✅ Quick to implement<br/>✅ Cost-effective for small scale]
+    C --> F[✅ Load balancer introduced<br/>✅ Database replication]
+    D --> G[✅ Microservices architecture<br/>✅ Global distribution]
+    
+    style A fill:#9c27b0,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#fff3e0,stroke:#333,stroke-width:2px
+    style C fill:#e8f5e8,stroke:#333,stroke-width:2px
+    style D fill:#e3f2fd,stroke:#333,stroke-width:2px
+    style E fill:#fff8e1,stroke:#333,stroke-width:1px
+    style F fill:#f1f8e9,stroke:#333,stroke-width:1px
+    style G fill:#e8f4fd,stroke:#333,stroke-width:1px
 ```
 
 ### 🏢 Real-World Hybrid Examples
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-<h4>📱 Instagram's Evolution</h4>
-<p><strong>2010:</strong> 1 Django server (vertical)</p>
-<p><strong>2012:</strong> Multiple web servers + database sharding</p>
-<p><strong>2020:</strong> Microservices + global CDN</p>
-</div>
-
-<div style="background: #fff3e0; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
-<h4>🛒 E-commerce Platform</h4>
-<p><strong>Web Tier:</strong> Horizontal (stateless servers)</p>
-<p><strong>Database:</strong> Vertical (powerful DB servers) + Read replicas (horizontal)</p>
-<p><strong>Cache:</strong> Horizontal (distributed Redis)</p>
-</div>
-
-</div>
+| 📱 Instagram's Evolution | 🛒 E-commerce Platform |
+|---|---|
+| **2010**: 1 Django server (vertical) | **Web Tier**: Horizontal (stateless servers) |
+| **2012**: Multiple web servers + database sharding | **Database**: Vertical (powerful DB servers) + Read replicas (horizontal) |
+| **2020**: Microservices + global CDN | **Cache**: Horizontal (distributed Redis) |
 
 ### 🎯 Hybrid Scaling Benefits
 
-<div style="background: #e1f5fe; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>✅ Why Hybrid Works Best</h4>
-<ul>
-<li><strong>Cost Optimization</strong>: Use vertical for databases, horizontal for web servers</li>
-<li><strong>Performance Balance</strong>: Fast single-node performance + distributed load handling</li>
-<li><strong>Gradual Transition</strong>: Start simple, add complexity as needed</li>
-<li><strong>Component-Specific</strong>: Choose best approach for each system component</li>
-<li><strong>Risk Mitigation</strong>: Not dependent on single scaling approach</li>
-</ul>
-</div>
+> ✅ **Why Hybrid Works Best**
+> - **Cost Optimization**: Use vertical for databases, horizontal for web servers
+> - **Performance Balance**: Fast single-node performance + distributed load handling
+> - **Gradual Transition**: Start simple, add complexity as needed
+> - **Component-Specific**: Choose best approach for each system component
+> - **Risk Mitigation**: Not dependent on single scaling approach
 
 ---
 
@@ -675,127 +385,64 @@ Use this framework to decide your scaling strategy systematically:
 
 ### 🔍 Step 1: Analyze Current Bottlenecks
 
-```html
-<div style="background: #fff8e1; padding: 20px; border-radius: 10px; border-left: 5px solid #ff9800; margin: 20px 0;">
-<h4>🔍 Bottleneck Identification</h4>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
-
-<div style="background: #ffebee; padding: 15px; border-radius: 8px;">
-<h5>🖥️ CPU Bottleneck</h5>
-<p><strong>Symptoms:</strong></p>
-<ul>
-<li>High CPU usage (>80%)</li>
-<li>Slow response times</li>
-<li>Request queuing</li>
-</ul>
-<p><strong>Solution:</strong> Vertical scaling or horizontal scaling</p>
-</div>
-
-<div style="background: #f3e5f5; padding: 15px; border-radius: 8px;">
-<h5>💾 Memory Bottleneck</h5>
-<p><strong>Symptoms:</strong></p>
-<ul>
-<li>High memory usage (>85%)</li>
-<li>Frequent garbage collection</li>
-<li>Swap usage</li>
-</ul>
-<p><strong>Solution:</strong> Vertical scaling (add RAM)</p>
-</div>
-
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px;">
-<h5>🗄️ Database Bottleneck</h5>
-<p><strong>Symptoms:</strong></p>
-<ul>
-<li>Slow query responses</li>
-<li>High DB CPU/memory</li>
-<li>Lock contention</li>
-</ul>
-<p><strong>Solution:</strong> Database-specific scaling (detailed in DB README)</p>
-</div>
-
-<div style="background: #e3f2fd; padding: 15px; border-radius: 8px;">
-<h5>🌐 Network Bottleneck</h5>
-<p><strong>Symptoms:</strong></p>
-<ul>
-<li>High bandwidth usage</li>
-<li>Network timeouts</li>
-<li>Geographic latency</li>
-</ul>
-<p><strong>Solution:</strong> CDN, load balancing (detailed in respective READMEs)</p>
-</div>
-
-</div>
-</div>
+```mermaid
+graph TD
+    A[Bottleneck Analysis] --> B[🖥️ CPU Bottleneck<br/>Symptoms: High CPU >80%<br/>Slow response times]
+    A --> C[💾 Memory Bottleneck<br/>Symptoms: High memory >85%<br/>Frequent garbage collection]
+    A --> D[🗄️ Database Bottleneck<br/>Symptoms: Slow queries<br/>High DB CPU/memory]
+    A --> E[🌐 Network Bottleneck<br/>Symptoms: High bandwidth<br/>Geographic latency]
+    
+    B --> F[Solution: Vertical or<br/>Horizontal scaling]
+    C --> G[Solution: Vertical scaling<br/>Add RAM]
+    D --> H[Solution: Database scaling<br/>See DB README]
+    E --> I[Solution: CDN,<br/>Load balancing]
+    
+    style A fill:#ff9800,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ffebee,stroke:#333,stroke-width:1px
+    style C fill:#f3e5f5,stroke:#333,stroke-width:1px
+    style D fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style E fill:#e3f2fd,stroke:#333,stroke-width:1px
 ```
 
 ### 📊 Step 2: Evaluate Requirements
 
-```html
-<div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 5px solid #4caf50; margin: 20px 0;">
-<h4>📋 Requirements Checklist</h4>
+> 📋 **Requirements Checklist**
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 15px 0;">
-
-<div style="background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-<h5>📈 Scale Requirements</h5>
-<ul>
-<li>Current users: ____</li>
-<li>Target users: ____</li>
-<li>Growth timeline: ____</li>
-<li>Peak traffic multiplier: ____</li>
-</ul>
-</div>
-
-<div style="background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-<h5>⚡ Performance Requirements</h5>
-<ul>
-<li>Response time: &lt;__ ms</li>
-<li>Throughput: __ req/sec</li>
-<li>Availability: ___%</li>
-<li>Error rate: &lt;__%</li>
-</ul>
-</div>
-
-<div style="background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-<h5>💰 Business Constraints</h5>
-<ul>
-<li>Budget: $____/month</li>
-<li>Timeline: __ weeks</li>
-<li>Team size: __ people</li>
-<li>Expertise level: ____</li>
-</ul>
-</div>
-
-</div>
-</div>
-```
+| 📈 Scale Requirements | ⚡ Performance Requirements | 💰 Business Constraints |
+|---|---|---|
+| Current users: ____ | Response time: <__ ms | Budget: $____/month |
+| Target users: ____ | Throughput: __ req/sec | Timeline: __ weeks |
+| Growth timeline: ____ | Availability: ___% | Team size: __ people |
+| Peak traffic multiplier: ____ | Error rate: <__% | Expertise level: ____ |
 
 ### 🎯 Step 3: Choose Scaling Strategy
 
-```html
-<div style="background: #f3e5f5; padding: 20px; border-radius: 10px; border-left: 5px solid #9c27b0; margin: 20px 0;">
-<h4>🎯 Decision Tree</h4>
-
-<div style="background: #fff; padding: 15px; border-radius: 8px; margin: 15px 0; font-family: monospace; font-size: 14px;">
-<pre>
-🤔 Current Users?
-├─ &lt; 1,000 users
-│  ├─ Budget limited? → <span style="background: #ffcdd2; padding: 2px 5px; border-radius: 3px;">Vertical Scaling</span>
-│  └─ Planning for growth? → <span style="background: #fff3e0; padding: 2px 5px; border-radius: 3px;">Start Vertical, Plan Horizontal</span>
-│
-├─ 1,000 - 10,000 users
-│  ├─ High availability needed? → <span style="background: #c8e6c9; padding: 2px 5px; border-radius: 3px;">Horizontal Scaling</span>
-│  └─ Simple application? → <span style="background: #ffcdd2; padding: 2px 5px; border-radius: 3px;">Vertical Scaling</span>
-│
-└─ &gt; 10,000 users
-   ├─ Global users? → <span style="background: #c8e6c9; padding: 2px 5px; border-radius: 3px;">Horizontal + CDN</span>
-   ├─ Variable traffic? → <span style="background: #c8e6c9; padding: 2px 5px; border-radius: 3px;">Horizontal + Auto-scaling</span>
-   └─ Always → <span style="background: #e1f5fe; padding: 2px 5px; border-radius: 3px;">Hybrid Approach</span>
-</pre>
-</div>
-
-</div>
+```mermaid
+flowchart TD
+    A[Choose Scaling Strategy] --> B{Performance Critical?}
+    B -->|Yes| C{Budget Flexible?}
+    B -->|No| D{Growth Expected?}
+    
+    C -->|Yes| E[Start with best<br/>performance solution]
+    C -->|No| F[Cost-optimized<br/>approach]
+    
+    D -->|Yes| G[Plan for scale<br/>from beginning]
+    D -->|No| H[Simple vertical<br/>scaling]
+    
+    E --> I[Hybrid approach<br/>Component-specific scaling]
+    F --> J[Start vertical<br/>Move to horizontal]
+    G --> K[Horizontal scaling<br/>with auto-scaling]
+    H --> L[Vertical scaling<br/>Monitor and adjust]
+    
+    style A fill:#667eea,stroke:#333,stroke-width:2px,color:#fff
+    style E fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style F fill:#fff3e0,stroke:#333,stroke-width:1px
+    style G fill:#e3f2fd,stroke:#333,stroke-width:1px
+    style H fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style I fill:#e1f5fe,stroke:#333,stroke-width:1px
+    style J fill:#f3e5f5,stroke:#333,stroke-width:1px
+    style K fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style L fill:#fff8e1,stroke:#333,stroke-width:1px
 ```
 
 ---
@@ -804,126 +451,63 @@ Use this framework to decide your scaling strategy systematically:
 
 ### 🚀 Startup Scaling Journey
 
-Let's follow a typical startup's scaling evolution:
+**📱 "SocialApp" - From 0 to 10M Users**
 
-```html
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin: 20px 0;">
-<h4>📱 "SocialApp" - From 0 to 10M Users</h4>
-</div>
-
-<div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 20px 0;">
-
-<div style="margin: 25px 0;">
-<h5 style="background: #ffeb3b; padding: 10px; border-radius: 5px; color: #333;">🌱 Stage 1: MVP Launch (0 - 1,000 users)</h5>
-<div style="background: #fff8e1; padding: 15px; border-radius: 8px; margin: 10px 0;">
-<p><strong>Architecture:</strong></p>
-<ul>
-<li>Single t3.medium server (2 vCPU, 4GB RAM)</li>
-<li>PostgreSQL database on same server</li>
-<li>Basic monitoring</li>
-</ul>
-<p><strong>Scaling Strategy:</strong> Vertical scaling when needed</p>
-<p><strong>Cost:</strong> $50/month</p>
-<p><strong>Issues:</strong> None yet, system handles load fine</p>
-</div>
-</div>
-
-<div style="margin: 25px 0;">
-<h5 style="background: #ff9800; padding: 10px; border-radius: 5px; color: white;">📈 Stage 2: Growth Phase (1,000 - 50,000 users)</h5>
-<div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin: 10px 0;">
-<p><strong>Problems Encountered:</strong></p>
-<ul>
-<li>Response times increasing (>500ms)</li>
-<li>Database queries slowing down</li>
-<li>High CPU usage during peak hours</li>
-</ul>
-<p><strong>Scaling Actions:</strong></p>
-<ul>
-<li>Upgrade to t3.xlarge (4 vCPU, 16GB RAM) - <em>Vertical Scaling</em></li>
-<li>Separate database to own server - <em>Component Separation</em></li>
-<li>Add Redis for session storage - <em>Caching Introduction</em></li>
-</ul>
-<p><strong>Cost:</strong> $400/month</p>
-<p><strong>Result:</strong> Response times back to <100ms</p>
-</div>
-</div>
-
-<div style="margin: 25px 0;">
-<h5 style="background: #f44336; padding: 10px; border-radius: 5px; color: white;">⚡ Stage 3: Viral Growth (50,000 - 500,000 users)</h5>
-<div style="background: #ffebee; padding: 15px; border-radius: 8px; margin: 10px 0;">
-<p><strong>Crisis Point:</strong></p>
-<ul>
-<li>Server hitting CPU limits (95% usage)</li>
-<li>Single point of failure concerns</li>
-<li>Need to scale quickly</li>
-</ul>
-<p><strong>Scaling Actions:</strong></p>
-<ul>
-<li>Introduce load balancer - <em>First Horizontal Scaling</em></li>
-<li>Add 2 more web servers (3 total)</li>
-<li>Database read replicas - <em>Database Horizontal Scaling</em></li>
-<li>CDN for static assets - <em>Global Distribution</em></li>
-</ul>
-<p><strong>Cost:</strong> $2,000/month</p>
-<p><strong>Result:</strong> System stable, ready for more growth</p>
-</div>
-</div>
-
-<div style="margin: 25px 0;">
-<h5 style="background: #4caf50; padding: 10px; border-radius: 5px; color: white;">🌍 Stage 4: Scale Phase (500,000 - 10M users)</h5>
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 10px 0;">
-<p><strong>Advanced Challenges:</strong></p>
-<ul>
-<li>Global user base</li>
-<li>Complex feature requirements</li>
-<li>Need for high availability</li>
-</ul>
-<p><strong>Scaling Actions:</strong></p>
-<ul>
-<li>Microservices architecture - <em>Service Decomposition</em></li>
-<li>Auto-scaling groups - <em>Dynamic Scaling</em></li>
-<li>Database sharding - <em>Data Partitioning</em></li>
-<li>Multi-region deployment - <em>Geographic Distribution</em></li>
-</ul>
-<p><strong>Cost:</strong> $50,000/month</p>
-<p><strong>Result:</strong> Handles millions of users globally</p>
-</div>
-</div>
-
-</div>
+```mermaid
+timeline
+    title SocialApp Scaling Journey
+    
+    section Stage 1: MVP Launch
+        0-1K users    : Single t3.medium server
+                      : PostgreSQL on same server
+                      : $50/month
+                      : Vertical scaling when needed
+    
+    section Stage 2: Growth Phase  
+        1K-50K users  : Response times >500ms
+                      : Upgrade to t3.xlarge
+                      : Separate database server
+                      : Add Redis for sessions
+                      : $400/month
+    
+    section Stage 3: Viral Growth
+        50K-500K users: CPU limits (95% usage)
+                       : Add load balancer
+                       : 3 web servers
+                       : Database read replicas
+                       : CDN for static assets
+                       : $2,000/month
+    
+    section Stage 4: Scale Phase
+        500K-10M users: Global user base
+                       : Microservices architecture
+                       : Auto-scaling groups
+                       : Database sharding
+                       : Multi-region deployment
+                       : $50,000/month
 ```
 
 ### 🏢 Enterprise Scaling Examples
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
-
-<div style="background: #e3f2fd; padding: 20px; border-radius: 10px; border-left: 5px solid #2196f3;">
-<h4>🎬 Netflix Scaling Strategy</h4>
-<p><strong>Challenge:</strong> Stream to 260M+ users globally</p>
-<p><strong>Approach:</strong></p>
-<ul>
-<li><strong>Microservices:</strong> 1000+ independent services</li>
-<li><strong>Auto-scaling:</strong> Services scale based on demand</li>
-<li><strong>Global CDN:</strong> 15,000+ servers worldwide</li>
-<li><strong>Chaos Engineering:</strong> Intentionally break things to test scaling</li>
-</ul>
-<p><strong>Result:</strong> 99.99% availability during peak traffic</p>
-</div>
-
-<div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 5px solid #4caf50;">
-<h4>🛒 Amazon Black Friday Scaling</h4>
-<p><strong>Challenge:</strong> Handle 20x normal traffic</p>
-<p><strong>Approach:</strong></p>
-<ul>
-<li><strong>Predictive Scaling:</strong> Pre-scale based on historical data</li>
-<li><strong>Horizontal Scaling:</strong> Add thousands of servers</li>
-<li><strong>Database Scaling:</strong> Read replicas + sharding</li>
-<li><strong>Queue Systems:</strong> Handle order spikes</li>
-</ul>
-<p><strong>Result:</strong> Handle record-breaking sales without downtime</p>
-</div>
-
-</div>
+```mermaid
+graph LR
+    A[🎬 Netflix Scaling] --> B[Challenge: 260M+ users globally]
+    B --> C[1000+ microservices<br/>Auto-scaling<br/>15K servers worldwide<br/>Chaos engineering]
+    C --> D[Result: 99.99% availability]
+    
+    E[🛒 Amazon Black Friday] --> F[Challenge: 20x traffic spike]
+    F --> G[Predictive scaling<br/>Thousands of servers<br/>Database scaling<br/>Queue systems]
+    G --> H[Result: No downtime]
+    
+    style A fill:#e91e63,stroke:#333,stroke-width:2px,color:#fff
+    style E fill:#ff9800,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#fce4ec,stroke:#333,stroke-width:1px
+    style F fill:#fff3e0,stroke:#333,stroke-width:1px
+    style C fill:#f3e5f5,stroke:#333,stroke-width:1px
+    style G fill:#fff8e1,stroke:#333,stroke-width:1px
+    style D fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style H fill:#e8f5e8,stroke:#333,stroke-width:1px
+```
 
 ---
 
@@ -931,99 +515,68 @@ Let's follow a typical startup's scaling evolution:
 
 ### 🎯 Design Principles for Scalable Systems
 
-<div style="background: #f3e5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
-<h4>🏗️ Fundamental Design Principles</h4>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
-
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-<h5>🔄 Stateless Design</h5>
-<p><strong>Principle:</strong> Servers don't store user session data</p>
-<p><strong>Benefit:</strong> Any server can handle any request</p>
-<p><strong>Implementation:</strong> Store sessions in external cache (Redis)</p>
-</div>
-
-<div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3;">
-<h5>🧱 Loose Coupling</h5>
-<p><strong>Principle:</strong> Components are independent</p>
-<p><strong>Benefit:</strong> Scale and deploy components separately</p>
-<p><strong>Implementation:</strong> Use APIs, message queues</p>
-</div>
-
-<div style="background: #fff3e0; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
-<h5>⚡ Async Processing</h5>
-<p><strong>Principle:</strong> Don't make users wait for slow operations</p>
-<p><strong>Benefit:</strong> Better user experience, higher throughput</p>
-<p><strong>Implementation:</strong> Background jobs, message queues</p>
-</div>
-
-<div style="background: #fce4ec; padding: 15px; border-radius: 8px; border-left: 4px solid #e91e63;">
-<h5>🗄️ Database Optimization</h5>
-<p><strong>Principle:</strong> Optimize before scaling</p>
-<p><strong>Benefit:</strong> Get more from existing resources</p>
-<p><strong>Implementation:</strong> Indexing, query optimization</p>
-</div>
-
-</div>
-</div>
+```mermaid
+graph TD
+    A[Scalable System Design] --> B[🔄 Stateless Design<br/>No server-stored sessions]
+    A --> C[🧱 Loose Coupling<br/>Independent components]
+    A --> D[⚡ Async Processing<br/>Background jobs]
+    A --> E[🗄️ Database Optimization<br/>Before scaling]
+    
+    B --> F[Store sessions in Redis<br/>Any server can handle requests]
+    C --> G[Use APIs & message queues<br/>Scale components separately]
+    D --> H[Don't make users wait<br/>Higher throughput]
+    E --> I[Add indexes, tune queries<br/>Get more from existing resources]
+    
+    style A fill:#9c27b0,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style C fill:#e3f2fd,stroke:#333,stroke-width:1px
+    style D fill:#fff3e0,stroke:#333,stroke-width:1px
+    style E fill:#fce4ec,stroke:#333,stroke-width:1px
+```
 
 ### 📈 Scaling Implementation Checklist
 
-```html
-<div style="background: #fff8e1; padding: 20px; border-radius: 10px; border-left: 5px solid #ff9800; margin: 20px 0;">
-<h4>✅ Pre-Scaling Checklist</h4>
+> ✅ **Pre-Scaling Checklist**
 
-<div style="margin: 15px 0;">
-<h5>🔍 Before You Scale:</h5>
-<ul style="list-style-type: none; padding-left: 0;">
-<li>☑️ <strong>Profile your application</strong> - Identify actual bottlenecks</li>
-<li>☑️ <strong>Optimize database queries</strong> - Add indexes, tune queries</li>
-<li>☑️ <strong>Implement caching</strong> - Cache frequently accessed data</li>
-<li>☑️ <strong>Review algorithms</strong> - Optimize inefficient code</li>
-<li>☑️ <strong>Monitor key metrics</strong> - Set up proper monitoring</li>
-<li>☑️ <strong>Load testing</strong> - Understand current capacity</li>
-</ul>
-</div>
+**🔍 Before You Scale:**
+- ☑️ **Profile your application** - Identify actual bottlenecks
+- ☑️ **Optimize database queries** - Add indexes, tune queries  
+- ☑️ **Implement caching** - Cache frequently accessed data
+- ☑️ **Review algorithms** - Optimize inefficient code
+- ☑️ **Monitor key metrics** - Set up proper monitoring
+- ☑️ **Load testing** - Understand current capacity
 
-<div style="margin: 15px 0;">
-<h5>⚙️ During Scaling:</h5>
-<ul style="list-style-type: none; padding-left: 0;">
-<li>☑️ <strong>Start small</strong> - Scale incrementally</li>
-<li>☑️ <strong>Monitor closely</strong> - Watch for issues</li>
-<li>☑️ <strong>Test thoroughly</strong> - Verify system works</li>
-<li>☑️ <strong>Have rollback plan</strong> - Be able to revert changes</li>
-<li>☑️ <strong>Document changes</strong> - Keep track of what you did</li>
-</ul>
-</div>
+**⚙️ During Scaling:**
+- ☑️ **Start small** - Scale incrementally
+- ☑️ **Monitor closely** - Watch for issues
+- ☑️ **Test thoroughly** - Verify system works
+- ☑️ **Have rollback plan** - Be able to revert changes
+- ☑️ **Document changes** - Keep track of what you did
 
-<div style="margin: 15px 0;">
-<h5>🔄 After Scaling:</h5>
-<ul style="list-style-type: none; padding-left: 0;">
-<li>☑️ <strong>Validate performance</strong> - Measure improvements</li>
-<li>☑️ <strong>Optimize costs</strong> - Right-size resources</li>
-<li>☑️ <strong>Plan next steps</strong> - Prepare for future growth</li>
-<li>☑️ <strong>Update documentation</strong> - Keep architecture docs current</li>
-<li>☑️ <strong>Train team</strong> - Ensure team understands new setup</li>
-</ul>
-</div>
-
-</div>
-```
+**🔄 After Scaling:**
+- ☑️ **Validate performance** - Measure improvements
+- ☑️ **Optimize costs** - Right-size resources
+- ☑️ **Plan next steps** - Prepare for future growth
+- ☑️ **Update documentation** - Keep architecture docs current
+- ☑️ **Train team** - Ensure team understands new setup
 
 ### ⚠️ Common Scaling Mistakes to Avoid
 
-<div style="background: #ffebee; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>❌ What NOT to Do When Scaling</h4>
-<ul>
-<li><strong>❌ Premature Optimization:</strong> Don't scale before you need to</li>
-<li><strong>❌ Over-Engineering:</strong> Don't build for 1M users when you have 1K</li>
-<li><strong>❌ Ignoring Bottlenecks:</strong> Don't add servers if database is the problem</li>
-<li><strong>❌ No Monitoring:</strong> Don't scale blind - measure everything</li>
-<li><strong>❌ Big Bang Approach:</strong> Don't change everything at once</li>
-<li><strong>❌ Neglecting Testing:</strong> Don't skip load testing</li>
-<li><strong>❌ Forgetting Costs:</strong> Don't ignore the financial impact</li>
-</ul>
-</div>
+```mermaid
+graph TD
+    A[❌ Common Scaling Mistakes] --> B[Premature Optimization<br/>Scaling before needed]
+    A --> C[Over-Engineering<br/>Building for 1M users with 1K]
+    A --> D[Ignoring Bottlenecks<br/>Adding servers when DB is problem]
+    A --> E[No Monitoring<br/>Scaling blind]
+    A --> F[Big Bang Approach<br/>Changing everything at once]
+    
+    style A fill:#f44336,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style C fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style D fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style E fill:#ffcdd2,stroke:#333,stroke-width:1px
+    style F fill:#ffcdd2,stroke:#333,stroke-width:1px
+```
 
 ---
 
@@ -1031,199 +584,159 @@ Let's follow a typical startup's scaling evolution:
 
 ### 🎯 Beginner Level (0-2 years)
 
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>🌱 Entry Level Questions</h4>
+<details>
+<summary><strong>1. What is the difference between horizontal and vertical scaling?</strong></summary>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">1. What is the difference between horizontal and vertical scaling?</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #4caf50; margin-top: 5px;">
-<p><strong>Expected Answer:</strong></p>
-<ul>
-<li><strong>Vertical Scaling:</strong> Adding more power (CPU, RAM) to existing server</li>
-<li><strong>Horizontal Scaling:</strong> Adding more servers to distribute load</li>
-<li>Give examples: upgrading server specs vs adding more servers</li>
-</ul>
-<p><strong>Follow-up:</strong> When would you use each approach?</p>
-</div>
+**Expected Answer:**
+- **Vertical Scaling**: Adding more power (CPU, RAM) to existing server
+- **Horizontal Scaling**: Adding more servers to distribute load
+- Give examples: upgrading server specs vs adding more servers
+
+**Follow-up**: When would you use each approach?
 </details>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">2. Why do we need to scale systems?</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #4caf50; margin-top: 5px;">
-<p><strong>Expected Answer:</strong></p>
-<ul>
-<li>Handle more users/traffic</li>
-<li>Maintain performance as system grows</li>
-<li>Ensure high availability</li>
-<li>Meet user expectations for speed</li>
-</ul>
-<p><strong>Follow-up:</strong> What happens if we don't scale?</p>
-</div>
+<details>
+<summary><strong>2. Why do we need to scale systems?</strong></summary>
+
+**Expected Answer:**
+- Handle more users/traffic
+- Maintain performance as system grows  
+- Ensure high availability
+- Meet user expectations for speed
+
+**Follow-up**: What happens if we don't scale?
 </details>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">3. What are the advantages and disadvantages of vertical scaling?</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #4caf50; margin-top: 5px;">
-<p><strong>Expected Answer:</strong></p>
-<p><strong>Advantages:</strong> Simple, no architecture changes, better for databases</p>
-<p><strong>Disadvantages:</strong> Hardware limits, single point of failure, expensive</p>
-<p><strong>Follow-up:</strong> Give a real-world example of when you'd choose vertical scaling</p>
-</div>
-</details>
+<details>
+<summary><strong>3. What are the advantages and disadvantages of vertical scaling?</strong></summary>
 
-</div>
+**Expected Answer:**
+- **Advantages**: Simple, no architecture changes, better for databases
+- **Disadvantages**: Hardware limits, single point of failure, expensive
+
+**Follow-up**: Give a real-world example of when you'd choose vertical scaling
+</details>
 
 ### 🎯 Intermediate Level (2-5 years)
 
-<div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>🚀 Intermediate Questions</h4>
+<details>
+<summary><strong>4. How would you scale a web application from 1,000 to 100,000 users?</strong></summary>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">4. How would you scale a web application from 1,000 to 100,000 users?</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #ff9800; margin-top: 5px;">
-<p><strong>Expected Answer Framework:</strong></p>
-<ol>
-<li><strong>Identify bottlenecks:</strong> Monitor CPU, memory, database performance</li>
-<li><strong>Start with vertical scaling:</strong> Upgrade server specs</li>
-<li><strong>Add horizontal scaling:</strong> Load balancer + multiple servers</li>
-<li><strong>Scale database:</strong> Read replicas, potential sharding</li>
-<li><strong>Add caching:</strong> Redis/Memcached for frequent data</li>
-<li><strong>Monitor and optimize:</strong> Continuous performance monitoring</li>
-</ol>
-<p><strong>Follow-up:</strong> What would be your first step?</p>
-</div>
+**Expected Answer Framework:**
+1. **Identify bottlenecks**: Monitor CPU, memory, database performance
+2. **Start with vertical scaling**: Upgrade server specs
+3. **Add horizontal scaling**: Load balancer + multiple servers
+4. **Scale database**: Read replicas, potential sharding
+5. **Add caching**: Redis/Memcached for frequent data
+6. **Monitor and optimize**: Continuous performance monitoring
+
+**Follow-up**: What would be your first step?
 </details>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">5. Your application is experiencing slow database queries. How do you scale?</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #ff9800; margin-top: 5px;">
-<p><strong>Expected Answer:</strong></p>
-<ol>
-<li><strong>First optimize:</strong> Add indexes, optimize queries</li>
-<li><strong>Vertical scaling:</strong> Upgrade database server (more RAM/CPU)</li>
-<li><strong>Read replicas:</strong> Distribute read traffic</li>
-<li><strong>Caching:</strong> Cache query results</li>
-<li><strong>Sharding:</strong> If data is too large for single server</li>
-</ol>
-<p><strong>Follow-up:</strong> How do you decide between these options?</p>
-</div>
+<details>
+<summary><strong>5. Your application is experiencing slow database queries. How do you scale?</strong></summary>
+
+**Expected Answer:**
+1. **First optimize**: Add indexes, optimize queries
+2. **Vertical scaling**: Upgrade database server (more RAM/CPU)
+3. **Read replicas**: Distribute read traffic
+4. **Caching**: Cache query results
+5. **Sharding**: If data is too large for single server
+
+**Follow-up**: How do you decide between these options?
 </details>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">6. Explain the challenges of horizontal scaling</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #ff9800; margin-top: 5px;">
-<p><strong>Expected Answer:</strong></p>
-<ul>
-<li><strong>Complexity:</strong> Need load balancers, distributed architecture</li>
-<li><strong>Data consistency:</strong> Keeping data synchronized across servers</li>
-<li><strong>Session management:</strong> Users might hit different servers</li>
-<li><strong>Network latency:</strong> Communication between servers</li>
-<li><strong>Debugging:</strong> Issues across multiple servers harder to trace</li>
-</ul>
-<p><strong>Follow-up:</strong> How would you address session management?</p>
-</div>
-</details>
+<details>
+<summary><strong>6. Explain the challenges of horizontal scaling</strong></summary>
 
-</div>
+**Expected Answer:**
+- **Complexity**: Need load balancers, distributed architecture
+- **Data consistency**: Keeping data synchronized across servers
+- **Session management**: Users might hit different servers
+- **Network latency**: Communication between servers
+- **Debugging**: Issues across multiple servers harder to trace
+
+**Follow-up**: How would you address session management?
+</details>
 
 ### 🎯 Advanced Level (5+ years)
 
-<div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>🏆 Senior Level Questions</h4>
+<details>
+<summary><strong>7. Design a scaling strategy for a global social media platform</strong></summary>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">7. Design a scaling strategy for a global social media platform</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #2196f3; margin-top: 5px;">
-<p><strong>Expected Comprehensive Answer:</strong></p>
-<ol>
-<li><strong>Multi-region deployment:</strong> Data centers worldwide</li>
-<li><strong>Microservices architecture:</strong> Independent scaling of features</li>
-<li><strong>Database strategy:</strong> Sharding by user geography/ID</li>
-<li><strong>CDN:</strong> Global content delivery for media</li>
-<li><strong>Auto-scaling:</strong> Dynamic capacity based on traffic</li>
-<li><strong>Caching strategy:</strong> Multi-level caching</li>
-<li><strong>Message queues:</strong> Async processing for posts/notifications</li>
-</ol>
-<p><strong>Follow-up:</strong> How would you handle data consistency across regions?</p>
-</div>
+**Expected Comprehensive Answer:**
+1. **Multi-region deployment**: Data centers worldwide
+2. **Microservices architecture**: Independent scaling of features
+3. **Database strategy**: Sharding by user geography/ID
+4. **CDN**: Global content delivery for media
+5. **Auto-scaling**: Dynamic capacity based on traffic
+6. **Caching strategy**: Multi-level caching
+7. **Message queues**: Async processing for posts/notifications
+
+**Follow-up**: How would you handle data consistency across regions?
 </details>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">8. How would you migrate from vertical to horizontal scaling with zero downtime?</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #2196f3; margin-top: 5px;">
-<p><strong>Expected Migration Strategy:</strong></p>
-<ol>
-<li><strong>Prepare:</strong> Make application stateless</li>
-<li><strong>Setup:</strong> Configure load balancer with current server</li>
-<li><strong>Add servers:</strong> Gradually add new servers to pool</li>
-<li><strong>Test:</strong> Route small percentage of traffic to new servers</li>
-<li><strong>Migrate:</strong> Gradually shift traffic to new architecture</li>
-<li><strong>Monitor:</strong> Watch for issues throughout process</li>
-<li><strong>Cleanup:</strong> Remove old infrastructure</li>
-</ol>
-<p><strong>Follow-up:</strong> What are the risks and how do you mitigate them?</p>
-</div>
+<details>
+<summary><strong>8. How would you migrate from vertical to horizontal scaling with zero downtime?</strong></summary>
+
+**Expected Migration Strategy:**
+1. **Prepare**: Make application stateless
+2. **Setup**: Configure load balancer with current server
+3. **Add servers**: Gradually add new servers to pool
+4. **Test**: Route small percentage of traffic to new servers
+5. **Migrate**: Gradually shift traffic to new architecture
+6. **Monitor**: Watch for issues throughout process
+7. **Cleanup**: Remove old infrastructure
+
+**Follow-up**: What are the risks and how do you mitigate them?
 </details>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">9. You need to scale a system that handles financial transactions. What are the special considerations?</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #2196f3; margin-top: 5px;">
-<p><strong>Expected Answer (Security & Compliance Focus):</strong></p>
-<ul>
-<li><strong>ACID compliance:</strong> Maintain transaction integrity</li>
-<li><strong>Security:</strong> Encryption, secure communication</li>
-<li><strong>Audit trail:</strong> Log all transactions</li>
-<li><strong>Regulatory compliance:</strong> Meet financial regulations</li>
-<li><strong>Availability:</strong> 99.99%+ uptime requirements</li>
-<li><strong>Data consistency:</strong> No lost or duplicate transactions</li>
-<li><strong>Disaster recovery:</strong> Backup and recovery procedures</li>
-</ul>
-<p><strong>Follow-up:</strong> How do you ensure data consistency in a distributed financial system?</p>
-</div>
-</details>
+<details>
+<summary><strong>9. You need to scale a system that handles financial transactions. What are the special considerations?</strong></summary>
 
-</div>
+**Expected Answer (Security & Compliance Focus):**
+- **ACID compliance**: Maintain transaction integrity
+- **Security**: Encryption, secure communication
+- **Audit trail**: Log all transactions
+- **Regulatory compliance**: Meet financial regulations
+- **Availability**: 99.99%+ uptime requirements
+- **Data consistency**: No lost or duplicate transactions
+- **Disaster recovery**: Backup and recovery procedures
+
+**Follow-up**: How do you ensure data consistency in a distributed financial system?
+</details>
 
 ### 🎯 Scenario-Based Questions
 
-<div style="background: #f3e5f5; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>🎭 Real-World Scenarios</h4>
+<details>
+<summary><strong>10. "Your e-commerce site is about to launch a Black Friday sale. How do you prepare for 10x traffic?"</strong></summary>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">10. "Your e-commerce site is about to launch a Black Friday sale. How do you prepare for 10x traffic?"</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #9c27b0; margin-top: 5px;">
-<p><strong>Expected Preparation Strategy:</strong></p>
-<ol>
-<li><strong>Capacity planning:</strong> Estimate expected traffic based on historical data</li>
-<li><strong>Pre-scaling:</strong> Scale up infrastructure before the event</li>
-<li><strong>Database prep:</strong> Optimize queries, add read replicas</li>
-<li><strong>CDN setup:</strong> Cache static assets and product images</li>
-<li><strong>Queue systems:</strong> Handle order processing asynchronously</li>
-<li><strong>Monitoring:</strong> Set up alerts for key metrics</li>
-<li><strong>Rollback plan:</strong> Have plan to handle failures</li>
-</ol>
-<p><strong>Follow-up:</strong> How do you handle payment processing at scale?</p>
-</div>
+**Expected Preparation Strategy:**
+1. **Capacity planning**: Estimate expected traffic based on historical data
+2. **Pre-scaling**: Scale up infrastructure before the event
+3. **Database prep**: Optimize queries, add read replicas
+4. **CDN setup**: Cache static assets and product images
+5. **Queue systems**: Handle order processing asynchronously
+6. **Monitoring**: Set up alerts for key metrics
+7. **Rollback plan**: Have plan to handle failures
+
+**Follow-up**: How do you handle payment processing at scale?
 </details>
 
-<details style="margin: 10px 0;">
-<summary style="font-weight: bold; cursor: pointer; padding: 10px; background: #f5f5f5; border-radius: 5px;">11. "Your startup just went viral and traffic increased 100x overnight. What do you do?"</summary>
-<div style="padding: 15px; background: #fff; border-left: 3px solid #9c27b0; margin-top: 5px;">
-<p><strong>Crisis Response Plan:</strong></p>
-<ol>
-<li><strong>Immediate:</strong> Scale vertically to buy time</li>
-<li><strong>Short-term:</strong> Add horizontal scaling quickly</li>
-<li><strong>Identify bottlenecks:</strong> Find what's breaking first</li>
-<li><strong>Emergency caching:</strong> Cache everything possible</li>
-<li><strong>Rate limiting:</strong> Protect system from overload</li>
-<li><strong>Communication:</strong> Update users about any issues</li>
-<li><strong>Plan long-term:</strong> Prepare for sustained growth</li>
-</ol>
-<p><strong>Follow-up:</strong> How do you prioritize which issues to fix first?</p>
-</div>
-</details>
+<details>
+<summary><strong>11. "Your startup just went viral and traffic increased 100x overnight. What do you do?"</strong></summary>
 
-</div>
+**Crisis Response Plan:**
+1. **Immediate**: Scale vertically to buy time
+2. **Short-term**: Add horizontal scaling quickly
+3. **Identify bottlenecks**: Find what's breaking first
+4. **Emergency caching**: Cache everything possible
+5. **Rate limiting**: Protect system from overload
+6. **Communication**: Update users about any issues
+7. **Plan long-term**: Prepare for sustained growth
+
+**Follow-up**: How do you prioritize which issues to fix first?
+</details>
 
 ---
 
@@ -1231,122 +744,62 @@ Let's follow a typical startup's scaling evolution:
 
 ### 🎯 Quick Reference for Interviews
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin: 20px 0;">
-<h4>🚀 Scaling Cheat Sheet - Must Remember Points</h4>
-</div>
-
-#### ⚡ Essential Concepts
-
-<div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<p><strong>🔼 Vertical Scaling (Scale Up):</strong></p>
-<ul>
-<li>Add more power to existing machine (CPU, RAM, Storage)</li>
-<li><strong>Pros:</strong> Simple, no code changes, consistent performance</li>
-<li><strong>Cons:</strong> Hardware limits, single point of failure, expensive</li>
-<li><strong>Best for:</strong> Databases, small-medium apps, quick fixes</li>
-</ul>
-</div>
-
-<div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<p><strong>➡️ Horizontal Scaling (Scale Out):</strong></p>
-<ul>
-<li>Add more machines to distribute workload</li>
-<li><strong>Pros:</strong> Unlimited scalability, high availability, cost-effective</li>
-<li><strong>Cons:</strong> Complex architecture, data consistency challenges</li>
-<li><strong>Best for:</strong> Large scale, stateless apps, high availability needs</li>
-</ul>
-</div>
-
-#### 🎯 Decision Framework
-
-```html
-<div style="background: #fff3e0; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800; margin: 15px 0;">
-<p><strong>Quick Decision Guide:</strong></p>
-<ul>
-<li><strong>&lt; 10K users:</strong> Start with vertical scaling</li>
-<li><strong>10K - 100K users:</strong> Add horizontal scaling</li>
-<li><strong>&gt; 100K users:</strong> Hybrid approach + microservices</li>
-<li><strong>Global app:</strong> Horizontal + multi-region</li>
-<li><strong>High availability needed:</strong> Always horizontal</li>
-</ul>
-</div>
+```mermaid
+graph TD
+    A[🚀 Scaling Cheat Sheet] --> B[⚡ Essential Concepts]
+    A --> C[🎯 Decision Framework]
+    A --> D[💰 Cost Considerations]
+    A --> E[🔧 Implementation Tips]
+    
+    B --> F[🔼 Vertical: Add power to machine<br/>➡️ Horizontal: Add more machines]
+    C --> G[<10K users: Vertical<br/>10K-100K: Add horizontal<br/>>100K: Hybrid approach]
+    D --> H[Vertical: Exponential cost<br/>Horizontal: Linear cost<br/>Break-even: ~10K-50K users]
+    E --> I[Measure first → Start simple<br/>Scale incrementally → Monitor]
+    
+    style A fill:#667eea,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#e8f5e8,stroke:#333,stroke-width:1px
+    style C fill:#fff3e0,stroke:#333,stroke-width:1px
+    style D fill:#ffebee,stroke:#333,stroke-width:1px
+    style E fill:#f3e5f5,stroke:#333,stroke-width:1px
 ```
-
-#### 💰 Cost Considerations
-
-<div style="background: #ffebee; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<ul>
-<li><strong>Vertical:</strong> Exponential cost increase (2x power = 4x cost)</li>
-<li><strong>Horizontal:</strong> Linear cost increase (2x servers = 2x cost)</li>
-<li><strong>Break-even point:</strong> Usually around 10K-50K users</li>
-<li><strong>Cloud advantage:</strong> Pay-as-you-use pricing models</li>
-</ul>
-</div>
-
-#### 🔧 Implementation Tips
-
-<div style="background: #f3e5f5; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<ul>
-<li><strong>Always measure first:</strong> Identify bottlenecks before scaling</li>
-<li><strong>Start simple:</strong> Don't over-engineer early</li>
-<li><strong>Scale incrementally:</strong> Small steps, monitor results</li>
-<li><strong>Plan for failure:</strong> Design for resilience</li>
-<li><strong>Monitor everything:</strong> Metrics drive scaling decisions</li>
-</ul>
-</div>
 
 ### 🗣️ Interview Success Tips
 
-<div style="background: #e1f5fe; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<h4>🎯 How to Answer Scaling Questions</h4>
-<ol>
-<li><strong>Ask clarifying questions:</strong> "How many users? What's the budget? Timeline?"</li>
-<li><strong>Start with current state:</strong> "Currently you have X users on Y infrastructure"</li>
-<li><strong>Identify bottlenecks:</strong> "The database seems to be the bottleneck because..."</li>
-<li><strong>Suggest solution:</strong> "I'd recommend horizontal scaling because..."</li>
-<li><strong>Discuss trade-offs:</strong> "This gives us X benefit but costs Y"</li>
-<li><strong>Plan evolution:</strong> "As we grow further, we'd add Z"</li>
-</ol>
-</div>
+> 🎯 **How to Answer Scaling Questions**
+> 1. **Ask clarifying questions**: "How many users? What's the budget? Timeline?"
+> 2. **Start with current state**: "Currently you have X users on Y infrastructure"
+> 3. **Identify bottlenecks**: "The database seems to be the bottleneck because..."
+> 4. **Suggest solution**: "I'd recommend horizontal scaling because..."
+> 5. **Discuss trade-offs**: "This gives us X benefit but costs Y"
+> 6. **Plan evolution**: "As we grow further, we'd add Z"
 
 ### ❌ Common Interview Mistakes
 
-<div style="background: #ffebee; padding: 15px; border-radius: 8px; margin: 15px 0;">
-<p><strong>Don't say:</strong></p>
-<ul>
-<li>❌ "Just add more servers" (without understanding bottlenecks)</li>
-<li>❌ "Microservices solve everything" (complexity overkill)</li>
-<li>❌ "Horizontal is always better" (ignores trade-offs)</li>
-<li>❌ "Scale for 1M users from day 1" (premature optimization)</li>
-</ul>
+**Don't say:**
+- ❌ "Just add more servers" (without understanding bottlenecks)
+- ❌ "Microservices solve everything" (complexity overkill)
+- ❌ "Horizontal is always better" (ignores trade-offs)
+- ❌ "Scale for 1M users from day 1" (premature optimization)
 
-<p><strong>Do say:</strong></p>
-<ul>
-<li>✅ "Let me first understand the bottleneck..."</li>
-<li>✅ "I'd start simple and evolve as needed..."</li>
-<li>✅ "There are trade-offs between approaches..."</li>
-<li>✅ "Based on the requirements, I'd choose X because..."</li>
-</ul>
-</div>
+**Do say:**
+- ✅ "Let me first understand the bottleneck..."
+- ✅ "I'd start simple and evolve as needed..."
+- ✅ "There are trade-offs between approaches..."
+- ✅ "Based on the requirements, I'd choose X because..."
 
 ### 📊 Numbers to Remember
 
-<div style="background: #fff8e1; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800; margin: 15px 0;">
-<ul>
-<li><strong>Response time goals:</strong> &lt;100ms web, &lt;1s mobile</li>
-<li><strong>Availability targets:</strong> 99.9% = 8.7h downtime/year, 99.99% = 52min/year</li>
-<li><strong>Scaling triggers:</strong> CPU &gt;70% scale up, &lt;30% scale down</li>
-<li><strong>Cost multiplier:</strong> High-end servers cost 10-100x more than commodity</li>
-<li><strong>Rule of thumb:</strong> Start vertical, go horizontal after 10K users</li>
-</ul>
-</div>
+- **Response time goals**: <100ms web, <1s mobile
+- **Availability targets**: 99.9% = 8.7h downtime/year, 99.99% = 52min/year
+- **Scaling triggers**: CPU >70% scale up, <30% scale down
+- **Cost multiplier**: High-end servers cost 10-100x more than commodity
+- **Rule of thumb**: Start vertical, go horizontal after 10K users
 
 ---
 
-<div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); padding: 20px; border-radius: 15px; text-align: center; margin: 30px 0;">
-<h3>🎯 You're Now Ready to Tackle Scaling Questions!</h3>
-<p>Next up: Deep dive into <strong>Load Balancing</strong>, <strong>Database Scaling</strong>, and <strong>Caching</strong> in their dedicated READMEs!</p>
-</div>
+## 🎯 You're Now Ready to Tackle Scaling Questions!
+
+**Next up**: Deep dive into **Load Balancing**, **Database Scaling**, and **Caching** in their dedicated READMEs!
 
 ---
 
