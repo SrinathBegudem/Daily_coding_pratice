@@ -1159,10 +1159,16 @@ flowchart TD
     G --> G1[Pros/Cons of choice<br/>What we're trading off]
     H --> H1[How it evolves<br/>Next scaling steps]
     
-    style A fill:#e3f2fd,stroke:#333,stroke-width:2px,color:#000
-    style B fill:#fff3e0,stroke:#333,stroke-width:2px,color:#000
-    style C fill:#e8f5e8,stroke:#333,stroke-width:2px,color:#000
-    style F fill:#f3e5f5,stroke:#333,stroke-width:2px,color:#000
+    style A fill:#9c27b0,stroke:#000,stroke-width:3px,color:#fff,font-weight:bold
+    style B fill:#ff9800,stroke:#000,stroke-width:3px,color:#fff,font-weight:bold
+    style C fill:#4caf50,stroke:#000,stroke-width:3px,color:#fff,font-weight:bold
+    style F fill:#2196f3,stroke:#000,stroke-width:3px,color:#fff,font-weight:bold
+    style B1 fill:#ffc107,stroke:#000,stroke-width:2px,color:#000,font-weight:bold
+    style D1 fill:#8bc34a,stroke:#000,stroke-width:2px,color:#000,font-weight:bold
+    style E1 fill:#ffab91,stroke:#000,stroke-width:2px,color:#000,font-weight:bold
+    style F1 fill:#03a9f4,stroke:#000,stroke-width:2px,color:#fff,font-weight:bold
+    style G1 fill:#f06292,stroke:#000,stroke-width:2px,color:#fff,font-weight:bold
+    style H1 fill:#ab47bc,stroke:#000,stroke-width:2px,color:#fff,font-weight:bold
 ```
 
 ### 📝 Interview Response Template
