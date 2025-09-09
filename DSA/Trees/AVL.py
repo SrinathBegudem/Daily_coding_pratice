@@ -89,7 +89,7 @@ class AVLTree:
             return right_rotate(node)
         
         #LR case: left heavy and key >= node.right.val
-        if b > 1 and key >= node.right.val:
+        if b > 1 and key >= node.left.val:
             node.left = left_rotate(node.left)
             return right_rotate(node)
         
