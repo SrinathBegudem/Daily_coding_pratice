@@ -54,7 +54,7 @@ class Solution:
 #-----------can also be solved like this---------------- kadane algo 
     def maxProfit(self, prices: List[int]) -> int:
         cur_profit = prices[0]
-        profit = float('-inf')
+        profit = 0 # because if no profit we return zero
         low = prices[0]
         for price in prices[1:]:
             cur_profit = price - low
@@ -63,4 +63,4 @@ class Solution:
                 low = price
             
             
-        return profit if profit > 0 else 0
+        return profit 
