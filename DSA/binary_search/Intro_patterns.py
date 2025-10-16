@@ -94,6 +94,7 @@ class BinarySearchMastery:
     - LeetCode 704: Binary Search (easy)
     - LeetCode 374: Guess Number Higher or Lower
     - LeetCode 367: Valid Perfect Square
+    - LeetCode 69. Sqrt(x)
     """
     
     def classic_binary_search(self, nums: List[int], target: int) -> int:
