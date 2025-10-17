@@ -200,7 +200,6 @@ class BinarySearchMastery:
     - LeetCode 35: Search Insert Position (easy) ⭐
     - LeetCode 34: Find First and Last Position (medium) ⭐⭐
     - LeetCode 278: First Bad Version (easy)
-    - LeetCode 69: Sqrt(x) (easy)
     """
     
     def lower_bound(self, nums: List[int], target: int) -> int:
@@ -289,6 +288,7 @@ class BinarySearchMastery:
     - LeetCode 34: Find First and Last Position (medium) ⭐⭐
     - LeetCode 744: Find Smallest Letter Greater Than Target
     - LeetCode 2300: Successful Pairs of Spells and Potions
+    - LeetCode 69: Sqrt(x) (easy)
     """
     
     def upper_bound(self, nums: List[int], target: int) -> int:
