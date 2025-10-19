@@ -1,3 +1,79 @@
+#2nd sol 
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        def brute_force():
+            """
+            The basic simple intuition is 
+            - have set 
+            - traverse along the linked list and append eeach node into set
+            - check if the cur node is already in set 
+            - if yes then we have a linked list cycle 
+            key points 
+            - if you add a node into set, the obj reference (address will be added like obj at <xoas19239r> not the node val or rthe whole next linked list), so even if you change the val it will be able still identify the node.
+            - time = o(n)
+            -space = o(n)
+            """
+            seen = set()
+            cur = head 
+            while cur: 
+                #check if cur is in seen 
+                if cur in seen:
+                    return True
+                seen.add(cur)
+                cur = cur.next
+            #if not returned inside the loop no linked list cycle 
+            return False
+        # return brute_force()
+        def optimal_sol():
+            """
+            The intuition here is 
+            - instead of having a seen there is imprtant pattern or concept in linked list called tortise and hare also known as slow and faster pointer 
+            - In this concept slow pointer moves one node at a time 
+            - faster pointer moves two nodes at a time 
+            - so if there is cycle the faster pointer can quickly able to catch the slow pointer.
+            - time = o(n)
+            -space = o(1)
+            """
+            #edge case if no head then fast.next will throw an eroor
+            if not head: return False
+            
+            slow = head
+            fast = head
+            while fast and fast.next:
+                #The loop condition is evaluated left → right with short-circuit.
+                #We only enter the body if both are true:
+                        # fast is not None
+                        # fast.next is not None
+                       #Since we already guaranteed fast.next exists, accessing fast.next.next is safe.
+           # fast.next.next may be None, and that’s fine—we simply set fast = None. We are not doing None.next; we’re assigning    None to fast.
+                
+                #increment slow pointer by one node
+                slow = slow.next
+                #fast pointer by two by nodes 
+                fast = fast.next.next
+                if fast is slow: # is operator checks the obj address that is exactly what we want here not just node.val comparision
+                    return True # linked list cycle exisits 
+            #once the while loops break there is no linked list cyle
+            return False
+        return optimal_sol()
+
+
+
+
+
+
+
+
+
+
+
+#1st sol
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, x):
