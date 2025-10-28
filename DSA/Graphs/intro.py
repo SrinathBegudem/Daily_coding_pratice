@@ -75,11 +75,34 @@ graph = {
 
 class Graph:
     # lets intialize a empty graph 
+#----------constrcutors/builders----------------------
     def __init__(self):
         self.graph = {}
     
+    def build_from_edges(self,n,edges):
+        # build the nodes and empty edges
+        for i in range(n):
+            self.graph[i] = []
+        # now add the edges 
+        for u,v in edges:
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+        print(f"Built graph from {len(edges)} edges")
+    
+    def build_from_adjacency_list(self,adj_lst):
+        # if adj_lst is dict
+        if isinstance(adj_lst,dict):
+            # already a dict , just copy the items 
+            self.graph = {node: neighbours for node,neighbours in adj_lst.items()}
+        if isinstance(adj_lst,list):
+            # create a dic from list
+            self.graph = {i: adj_lst[i][:] for i in range(len(adj_lst))}
+
+        print(f"Built graph from adjacency list with {len(self.graph)} nodes")
+    
     #add funcitonalities 
 
+#---------------setters---------------------------------
     #1) add nodes 
     def add_node(self,node):
         #check if the node is not already in graph 
@@ -101,6 +124,7 @@ class Graph:
         self.graph[u].append(v)
         self.graph[v].append(u)
     
+#---------------getters---------------------
     #3) return all neighbors of a given node 
     def get_neighbors(self,node):
         # check if node exist 
@@ -108,32 +132,33 @@ class Graph:
             return self.graph[node]
         #else return empty list
         return []
+    
+    #4) get degree (no of connections) of a node
+    def get_degree(self,node):
+        #check if node exists 
+        if self.node_exist(node):
+            return len(self.graph[node])
+        return 0
+    
+    #5) get all nodes
+    def get_all_nodes(self):
+        return list(self.graph.keys())
 
-    #4) check if a node exists 
+#-------------------checkers--------------- 
+    #6) check if a node exists 
     def node_exist(self,node):
         if node in self.graph:
             return True
         else:
             return False
-    
-    #5) check if given two nodes has edge 
+        
+    #7) check if given two nodes has edge 
     def has_edge(self,u,v):
         #check if any one node exist either u or v as it is undirected graph 
         if self.node_exist(u): # if u exist let proceed to check if there is v in u val list 
             return v in self.graph[u] # if exist then true else 
         #if u didnt exisit then it sure that there is no edge even if v exist
         return False
-    
-    #6) get degree (no of connections) of a node
-    def get_degree(self,node):
-        #check if node exists 
-        if self.node_exist(node):
-            return len(self.graph[node])
-        return f"{node} node doesn't exisit"
-    
-    #7) get all nodes
-    def get_all_nodes(self):
-        return list(self.graph.keys())
     
     def __str__(self):
         return str(self.graph)
@@ -142,5 +167,41 @@ class Graph:
 
 
 
+
+
+# Version 1: List-Based Graph Class for undirected graph 
+
+class ListGraph:
+    # lets intialize an empty graph list
+    def __init__(self):
+        self.graph = []
+    
+#----------setters----------------
+    def add_edge(self,u,v):
+        if self.node_exists(u) and self.node_exists(v):
+            self.graph[u].append(v)
+            self.graph[v].append(u)
+    
+        
+    
+    def remove_edge(self,u,v):
+        #remove edge btw u and v 
+        if self.node_exists(u) and self.node_exists(v):
+            self.graph[u].remove(v)
+            self.graph[v].remove(u)
+# #NOTE: Cannot add_node() or remove_node() in list-based!
+# Size is FIXED at initialization
+#----------getters----------------
+
+#----------checkers---------------
+    def is_empty(self):
+        if self.graph:
+            return True
+        else:
+            False
+    
+    def node_exists(self,node):
+        return 0 <= node <= len(self.graph)
+    
 
 
