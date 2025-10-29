@@ -209,7 +209,46 @@ class BFSPatterns:
     # ═══════════════════════════════════════════════════════════════════════
     # PATTERN 4: MULTI-SOURCE BFS ⭐⭐⭐
     # ═══════════════════════════════════════════════════════════════════════
-    
+
+    # simialr to bfs_with_distance(), use this for multi source bfs too just writee a for loop to add all soucres and dist
+    def multi_source_bfs(graph, sources):
+        """
+        Multi-source BFS using Style 1 (store distance when adding to queue)
+        """
+        queue = deque()
+        visited = set()
+        distances = {}
+        
+        # Step 1: Add ALL sources to queue at distance 0
+        for source in sources:
+            queue.append((source, 0))
+            visited.add(source)
+            distances[source] = 0  # ← Store source distances immediately
+        
+        # Step 2: Regular BFS
+        while queue:
+            node, dist = queue.popleft()
+            
+            # Explore neighbors
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    distances[neighbor] = dist + 1  # ← Style 1: Store when adding!
+                    queue.append((neighbor, dist + 1))
+        
+        return distances
+
+
+
+
+
+
+
+
+
+
+    # adding distance at processing before the loop, less inutuitive, yet both the above and below gives same ans the above 
+    # is preffered as it is simialrly to the bfs_with_distance pattern
     def multi_source_bfs(self, graph, sources):
         """
         BFS starting from MULTIPLE sources simultaneously
@@ -245,7 +284,7 @@ class BFSPatterns:
         
         while queue:
             node, dist = queue.popleft()
-            distances[node] = dist
+            distances[node] = dist #ading distance here is confusing, lets follow single pattern same like bfs with distance
             
             for neighbor in graph[node]:
                 if neighbor not in visited:
@@ -287,10 +326,14 @@ class BFSPatterns:
         """
         rows, cols = len(grid), len(grid[0])
         queue = deque([(start_r, start_c, 0)])  # (row, col, distance)
-        visited = set([(start_r, start_c)])
+        visited = set([(start_r, start_c)]) # set iterted over list of one elem or you can do somehting like 
+        # visited = {(start_r, start_c)}  # ← Better than set([...])
         
         # 4 directions: right, down, left, up
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        # #8-Directional: 4 caridnals + 4 directions ( rest all code remains same)
+        # directions = [(0, 1), (1, 0), (0, -1), (-1, 0),    # 4 cardinal
+        #           (1, 1), (1, -1), (-1, 1), (-1, -1)]  # 4 diagonal
         
         while queue:
             r, c, dist = queue.popleft()

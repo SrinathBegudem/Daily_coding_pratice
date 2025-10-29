@@ -97,6 +97,76 @@ class GraphTraversal:
         return levels
 
 
+# bfs of disconnected graph 
+    def bfs_sepcial_case(graph, n , start):
+        """
+        graph is a adjacency list 
+        n is no of nodes 
+        start is the first node of graph 
+        """
+        def bfs_disconnected_graph(graph, n):
+            """
+            - Standard bfs can only traverse to the single graph component
+            - if There are mutiple graph components and they are disconnected
+            - we use a set based approch to traverse each vertex and call bfs for each vertex 
+            - The visited set is shared among the diff functions 
+            """
+
+            # we have a visited set to check that we dont visited a particular node twice 
+            visited = set()
+            # now we will loop through the vertices and call bfs on each vertex(node)
+            res = [] # we can add components wise 
+            for node in range(n):
+                
+                if node not in visited:
+                    components = [] # add components wise 
+                    # start bfs from this unvisited vertex
+                    bfs(graph, start, visited)
+                    res.append(components)
+            
+            # standard bfs helper function to traverse a single component graph 
+        
+        def bfs(graph, start, visited, components):
+            q = deque([start])
+            visited = set()
+            visited.add(start)
+
+            while q:
+                node = q.popleft()
+                components.append(node)
+
+                for neighbours in graph[node]:
+                    if neighbours not in visited:
+                        visited.append(neighbours)
+                        q.append(node)
+                
+
+# -----------------------------depth first search (dfs)-----------------------
+    def dfs_recursive(graph, start):
+        res = []
+        visited = set()
+        def dfs(node):
+            
+            # base condition 
+            if node in visited:
+                return 
+            
+            # Add the node to the res and marks the node as visited
+            res.append(node)
+            visited.add(node)
+            
+            # lets go to the depth 
+            for neighbours in graph[node]:
+                dfs(neighbours)
+        
+
+
+
+
+
+
+
+
 
 
 
