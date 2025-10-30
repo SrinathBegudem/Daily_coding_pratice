@@ -111,7 +111,66 @@ class DFSPatterns:
     # ═══════════════════════════════════════════════════════════════════════
     # PATTERN 3: DFS FOR ALL PATHS (BACKTRACKING) ⭐⭐⭐
     # ═══════════════════════════════════════════════════════════════════════
-    
+    def all_paths_universal(graph, start, target):
+        """
+        Find ALL paths from start to target
+        Works for BOTH DAG and graphs with cycles!
+        
+        WHEN TO USE:
+        - Find ALL possible paths (not just shortest)
+        - Need to explore every route
+        - Combination of paths
+        
+        KEY DIFFERENCE FROM DAG-ONLY:
+        ┌─────────────────────────────────────────────────┐
+        │ DAG (No Cycles):                                │
+        │   - No visited tracking needed                  │
+        │   - Just backtrack path                         │
+        │                                                 │
+        │ Graph WITH Cycles:                              │
+        │   - MUST track visited IN CURRENT PATH          │
+        │   - Add to visited when entering                │
+        │   - Remove from visited when backtracking       │
+        └─────────────────────────────────────────────────┘
+        
+        UNIVERSAL SOLUTION:
+        Always use visited set that tracks CURRENT PATH only!
+        This works for both DAG and cyclic graphs.
+        
+        TIME: O(2^V * V) - exponential
+        SPACE: O(V) for recursion + path
+        
+        LEETCODE PROBLEMS:
+        - 797: All Paths From Source to Target (DAG)
+        - 1059: All Paths from Source Lead to Destination
+        - Custom problems with cycles
+        """
+        result = []
+        path = []
+        visited = set()  # Track CURRENT PATH only (prevents cycles)
+        
+        def dfs(node):
+            # Add to current path
+            path.append(node)
+            visited.add(node)  # Mark as visited IN CURRENT PATH
+            
+            # Found target - save this path
+            if node == target:
+                result.append(path[:])  # MUST copy path!
+            else:
+                # Explore all neighbors
+                for neighbor in graph[node]:
+                    if neighbor not in visited:  # Avoid cycles!
+                        dfs(neighbor)
+            
+            # BACKTRACK
+            path.pop()           # Remove from path
+            visited.remove(node) # Remove from visited (allow other paths to use this node)
+        
+        dfs(start)
+        return result
+
+    # the above is universal sol and the below is only for DAG (no visited is need)
     def all_paths_source_to_target(self, graph, start, target):
         """
         Find ALL paths from start to target using backtracking
