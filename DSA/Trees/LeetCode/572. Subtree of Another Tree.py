@@ -4,6 +4,77 @@
 #         self.val = val
 #         self.left = left
 #         self.right = right
+from collections import deque
+class Solution:
+    def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
+        """
+        I would say the bfs solution would be more easy to code for this question
+        - i think we need to have a helper funciton when the root of tree is equal to the subroot, then we check for sametree
+        - so bfs or dfs the idea remains same , just know the tiny optimisation for not searchign whole tree once the subtree is found
+        """
+        # base case if not root and sub
+        if not root and not subRoot:
+            return True
+
+        def is_same_dfs(node1,node2):
+            # base cases 
+            if not node1 and not node2:
+                return True
+            if not node1 or not node2: 
+                return False
+            if node1.val != node2.val:
+                return False
+            return is_same_dfs(node1.left,node2.left) and is_same_dfs(node1.right,node2.right)
+        
+        # the dfs solution is bit tricky we traverse the tree until the node.val == subnode.val condition triggers once it triggers we check and early return and the key points are if we move to the leaf nodes and None node we need to return False not true if we return true we are using or statement, this will early cut if we return true so thats why we return false, and the or statment is used so if we find early subroot we root and wont traverse whole tree
+        def dfs(node,subnode):
+            #base cases 
+            if not node: # important return False not true because of the or statement 
+                return False
+            if node.val == subnode.val and is_same_dfs(node,subnode): # vall the same tree function if and only if vals match
+                return True
+            return dfs(node.left,subnode) or dfs(node.right,subnode) # return early when one of the left or right subtree met the condition 
+        return dfs(root,subRoot)
+            
+
+        # the bfs approch is very straight forward , we will have a helper funciton and a checker if it turns true we early return else we traverse whole tree
+        def is_same_bfs(node1,node2):
+            q = deque([(node1,node2)])
+            while q:
+                n1,n2 = q.popleft()
+                if not n1 and not n2:
+                    continue
+                if not n1 or not n2:
+                    return False
+                if n1.val != n2.val:
+                    return False
+                q.append((n1.left,n2.left))
+                q.append((n1.right,n2.right))
+            return True
+        
+
+        def bfs():
+            q = deque([(root)])
+            check = False
+            while q:
+                node = q.pop()
+                if node.val == subRoot.val:
+                    check = is_same(node,subRoot)
+                if check:
+                    return check
+                if node.left: q.append(node.left)
+                if node.right: q.append(node.right)
+            return check
+        return bfs()
+
+        
+
+
+
+
+
+
+#---------------previous try sol--------------------------------
 class Solution:
     def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
         self.flag = False

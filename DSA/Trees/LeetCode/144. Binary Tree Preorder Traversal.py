@@ -6,46 +6,45 @@
 #         self.right = right
 class Solution:
     def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
-        res1= []
-        res2= []
-        
-        #------------------recursion(DFS)-------------------
-        def recur_sol(node):
-            """
-            Intuition is we need to R->l->r (pre means root comes first), so simply append to the res at the beggining of recursion call thats it and traverse to the depths of left
-            """
-            #base condition:
-            if not node: #or to be more explicit we can also keep if node is None:
-                return #just return
-            
-            #-----core logic---------
-            #add res first(pre)
-            res1.append(node.val)
-            #make recursion calls 
-            #left first 
-            recur_sol(node.left)
-            #right next
-            recur_sol(node.right)
-        # recur_sol(root)
-        # return res1
 
-        def iter_sol(node):
+        def iter(node,res):
             """
-            Intution here is to use stack and build the tree and parelle we  append our res as we traverse 
+            Key idea
+            - we use stack to mimic recursion in iter sol 
+            - concept remains same 
+            - process the node first 
+            - then check if node.right exisits if yes, process it first because we pop from the end so left should be added at the end 
+            - then check if node.left exisits if yes. add it to the stack
             """
-            stack = [node]
+            #base
+            if not node:
+                return
+            stack = [node] # adding the root node
             while stack:
-                #pop the node and append it to res 
+                # process the node
                 node = stack.pop()
-                #base case:
-                if node is None:
-                    continue # we want to continue here not return if we return we do early exit
-                res2.append(node.val)
-                # push righ and then left so when you pop we get left first as it is expected to be before 
+                res.append(node.val)
+                # check if the right node exsits 
                 if node.right: stack.append(node.right)
-                if node.left : stack.append(node.left)
-        iter_sol(root)
-        return res2
+                # check left node exsists
+                if node.left: stack.append(node.left)
+        res = []
+        iter(root,res)
+        return res
 
+        def recur(node,res):
+            """
+            Root -> left -> right
+            """
+            if not node: return 
 
+            #process the node first 
+            res.append(node.val)
+            #move left
+            recur(node.left,res)
+            #move right
+            recur(node.right,res)
+        res = []
+        recur(root,res)
+        return res
         

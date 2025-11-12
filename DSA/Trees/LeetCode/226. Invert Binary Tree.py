@@ -6,32 +6,33 @@
 #         self.right = right
 class Solution:
     def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
-        if not root: return
 
-        # def dfs(t1,t2):
-        #     if not t1 and not t2: return 
-
-        #     dfs(t1.left,t2.right)
-        #     dfs(t1.right,t2.left)
-        #     t1.left, t2.right = t2.right, t1.left
-        #     t1.right, t2.left = t2.left, t1.right
-        #     return 
-        
-        # dfs(root,root)
-        # return root
         def dfs(node):
-            if not node: return
+            """
+            The key idea is 
+            - divide the big from into small problem 
+            - move to the bottom most sub tree 
+            - swap the nodes ie node.right,node.left = node.left,node.right
+            - and continue doing this till the root
+            so the idea is clear
+            - lets do post order traversal 
+            - move to the bottom most left sub tree 
+            - swap the nodes (trees are mutable in python)
+            - once swapped we can return that node if there is some operation left but in this sum we can just leave it as is.
+            """
+            #base case 
+            if not node: return 
+
+            #move to the leaft node 
             dfs(node.left)
             dfs(node.right)
+            #process the node
             node.left,node.right = node.right,node.left
-            return node
-        return dfs(root)
+            # return node 
+
+        dfs(root)
+        return root
 
 
-# # pass ,next     ,waiting      ,return 
-
-# (2,7)  (1,9)     (3,6)              
-# (1,9)   (n,n)    (n,n)  -------- 
-# n,n---------------------------
-# n,n --------------------------
-# 3,6
+            
+        
