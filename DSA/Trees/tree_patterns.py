@@ -1138,6 +1138,18 @@ class TreePatterns:
     - LeetCode 235: Lowest Common Ancestor of BST (easy) ⭐⭐
     - LeetCode 1644: LCA II (nodes might not exist) (medium)
     - LeetCode 1650: LCA III (with parent pointers) (medium)
+
+    The Key diff for lca(236) and lca 2(1644) is that 
+    lca 1 :
+    - the check condition comes before exploring children 
+    - as it is gaurenteed that both p and q exists we return once p or q is found this is premature return 
+    - and this works for only lca 1
+    lca 2:
+    - here your not gauntreed to have p and q 
+    - so you should check all nodes before returning 
+    - so check should come after the recurse ( visitng both children)
+    - this gauntree to visit all the nodes in the tree and checking if node exists 
+
     """
     
     def lowest_common_ancestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
@@ -1208,6 +1220,8 @@ class TreePatterns:
                 return root
         
         return None
+    
+
     
     
     # ═══════════════════════════════════════════════════════════════════════
