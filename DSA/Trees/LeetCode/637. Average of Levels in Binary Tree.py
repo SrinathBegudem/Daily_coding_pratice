@@ -7,24 +7,29 @@
 from collections import deque
 class Solution:
     def averageOfLevels(self, root: Optional[TreeNode]) -> List[float]:
-        """similar concept as level order traversal expect that here we are not printing level of arr but sum and taking avg and appending that to the res."""
-        if not root:
-            return []
-        
-        res = []
-        q = deque([root])
 
-        while q:
-            level_sum = 0
-            size = len(q)
-            for _ in range(size):
-                node = q.popleft()
-                level_sum += node.val
-                if node.left:
-                    q.append(node.left)
-                if node.right:
-                    q.append(node.right)
-            res.append(round((level_sum/size),5))
-        return res
-        
+        def bfs(node):
+            """
+            level order traversal(bfs) + cur_level_sum / size_level , append it to the res after endo f cur level
+            """
+            q = deque([node])
+            res = [] 
+            while q:
+                level_size = len(q)
+                level_sum = 0 
+                for _ in range(level_size):
+                    #prcoess the node
+                    node = q.popleft()
+                    # add to the cur_level sum
+                    level_sum += node.val
+                    #add its children 
+                    if node.left: q.append(node.left)
+                    if node.right: q.append(node.right)
+                avg_level = level_sum/level_size
+                res.append(avg_level)
+            return res
+        return bfs(root)
+
+
+
         
