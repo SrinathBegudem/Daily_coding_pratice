@@ -84,8 +84,55 @@ You must:
 
 
 
+# type 2 of solving from collections import deque
+# in this below apporch we did add the visited set inside dfs and bfs 
+# edge casse here in below sol is i did not add the first start point in outer loop
+#where i increase the increment of provinces so i need to explicity add inside bfs top near q declaration
+# and in this dfs approch i added to the set at the top but for above sum you can add it to inside for loop bcz the starting point is added near provicnes
+class Solution:
+    def findCircleNum(self, isConnected: List[List[int]]) -> int:
+        """
+        Traverse each city and visit it niegh. thats it 
+        - dont apply grid matrix traversal like no of island because this are not physical things or land, they are nodes 
+        """
+        def dfs(cur_city):
+            visited.add(cur_city)
+            for nei in range(n):
+                if isConnected[cur_city][nei] and nei not in visited:
+                    dfs(nei)
+
+        def bfs(city):
+            q = deque([city])
+            visited.add(city)# start node adding edge case
+            
+            while q:
+                cur_city = q.popleft()
+                for nei in range(n):
+                    if isConnected[cur_city][nei] and nei not in visited:
+                        visited.add(nei)
+                        q.append(nei)
 
 
+
+        n = len(isConnected) # no of cities
+
+
+        # for each city we do bfs to find all its nieghbours
+        # this approch is for disconnected graphs 
+        # if the grpah is connected we donnot need this forloop
+        provinces = 0
+        visited = set()
+        for city in range(n):
+            if city not in visited:
+                provinces += 1
+                # bfs(city)
+                dfs(city)
+        return provinces
+
+            
+
+
+        
 
 
 
