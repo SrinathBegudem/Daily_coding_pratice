@@ -114,10 +114,10 @@ class PrefixSumPatterns:
     General: sum[L,R] = prefix[R] - (prefix[L-1] if L > 0 else 0)
     
     💡 LEETCODE PROBLEMS:
-    - LeetCode 303: Range Sum Query - Immutable (easy) ⭐⭐⭐
-    - LeetCode 1480: Running Sum of 1d Array (easy) ⭐⭐
-    - LeetCode 1413: Minimum Value to Get Positive Step Sum (easy) ⭐
-    - LeetCode 724: Find Pivot Index (easy) ⭐⭐
+    - LeetCode 303: Range Sum Query - Immutable (easy) ⭐⭐⭐ ✅
+    - LeetCode 1480: Running Sum of 1d Array (easy) ⭐⭐✅
+    - LeetCode 1413: Minimum Value to Get Positive Step Sum (easy) ⭐✅
+    - LeetCode 724: Find Pivot Index (easy) ⭐⭐✅
     """
     
     class NumArray:
@@ -296,9 +296,9 @@ class PrefixSumPatterns:
     If found, those previous positions form valid subarrays!
     
     💡 LEETCODE PROBLEMS:
-    - LeetCode 560: Subarray Sum Equals K (medium) ⭐⭐⭐ MUST KNOW!
-    - LeetCode 974: Subarray Sums Divisible by K (medium) ⭐⭐⭐
-    - LeetCode 523: Continuous Subarray Sum (medium) ⭐⭐⭐
+    - LeetCode 560: Subarray Sum Equals K (medium) ⭐⭐⭐ MUST KNOW!✅
+    - LeetCode 974: Subarray Sums Divisible by K (medium) ⭐⭐⭐✅
+    - LeetCode 523: Continuous Subarray Sum (medium) ⭐⭐⭐✅
     - LeetCode 525: Contiguous Array (medium) ⭐⭐⭐
     - LeetCode 930: Binary Subarrays With Sum (medium) ⭐⭐
     """
@@ -313,26 +313,36 @@ class PrefixSumPatterns:
         🔑 TEMPLATE: Prefix Sum + HashMap
         This template works for many problems!
         """
+        # count = 0
+        # curr_sum = 0
+        
+        # # HashMap: prefix_sum → count
+        # prefix_map = {0: 1}  # Empty subarray has sum 0
+        
+        # for num in nums:
+        #     # Update current sum
+        #     curr_sum += num
+            
+        #     # Check if (curr_sum - k) exists
+        #     # If yes, those positions form valid subarrays
+        #     target = curr_sum - k
+        #     if target in prefix_map:
+        #         count += prefix_map[target]
+            
+        #     # Add current sum to map
+        #     prefix_map[curr_sum] = prefix_map.get(curr_sum, 0) + 1
+        
+        # return count
+        # the below code works just fine the above is more verbose
+        seen = {0:1}
+        cur = 0
         count = 0
-        curr_sum = 0
-        
-        # HashMap: prefix_sum → count
-        prefix_map = {0: 1}  # Empty subarray has sum 0
-        
         for num in nums:
-            # Update current sum
-            curr_sum += num
-            
-            # Check if (curr_sum - k) exists
-            # If yes, those positions form valid subarrays
-            target = curr_sum - k
-            if target in prefix_map:
-                count += prefix_map[target]
-            
-            # Add current sum to map
-            prefix_map[curr_sum] = prefix_map.get(curr_sum, 0) + 1
-        
+            cur += num
+            count += seen.get(cur-k,0)
+            seen[cur] = seen.get(cur,0) + 1
         return count
+
     
     
     def subarrays_div_by_k(self, nums: List[int], k: int) -> int:
@@ -356,28 +366,50 @@ class PrefixSumPatterns:
         - [1,2]: (4,9,9) → pairs with remainder 4
         Total: C(4,2) = 6 subarrays ✓
         """
+        # count = 0
+        # curr_sum = 0
+        
+        # # HashMap: remainder → count
+        # remainder_map = {0: 1}  # Empty subarray
+        
+        # for num in nums:
+        #     curr_sum += num
+            
+        #     # Get remainder (handle negative with %k)
+        #     remainder = curr_sum % k
+        #     if remainder < 0:
+        #         remainder += k
+            
+        #     # Count subarrays ending here
+        #     if remainder in remainder_map:
+        #         count += remainder_map[remainder]
+            
+        #     # Update map
+        #     remainder_map[remainder] = remainder_map.get(remainder, 0) + 1
+        
+        # return count
+        seen  = {0:1}
+        
+        cur = 0
         count = 0
-        curr_sum = 0
-        
-        # HashMap: remainder → count
-        remainder_map = {0: 1}  # Empty subarray
-        
+
         for num in nums:
-            curr_sum += num
-            
-            # Get remainder (handle negative with %k)
-            remainder = curr_sum % k
-            if remainder < 0:
-                remainder += k
-            
-            # Count subarrays ending here
-            if remainder in remainder_map:
-                count += remainder_map[remainder]
-            
-            # Update map
-            remainder_map[remainder] = remainder_map.get(remainder, 0) + 1
-        
+            cur += num
+            rem = cur % k
+            # the below part is only for other lang python works fine with negative remainders, so without the belwo code also python runs correctly the below is just for safety 
+            if rem < 0: # this happend when -negnum % positive = -negnum
+                rem += k
+            count += seen.get(rem,0)  
+            seen[rem] = seen.get(rem,0) + 1
         return count
+
+# # example 1 
+# [4,5,0,-2,-3,1]
+# seen = {
+#     0:1
+#     4:1
+# }
+# at index 1 cur = 4+5 = 9 % 5 = 4 , we need to check if the seen has any subarray that sums up to 4 if yes we remove that we get the cur to be 9 -4 which is 5 that is divisble by 5
     
     
     def check_subarray_sum(self, nums: List[int], k: int) -> bool:
@@ -400,25 +432,39 @@ class PrefixSumPatterns:
         Subarray [2,4] has sum 6 (divisible by 6)
         """
         # HashMap: remainder → first index
-        remainder_map = {0: -1}  # Handle edge case
-        curr_sum = 0
+        # remainder_map = {0: -1}  # Handle edge case
+        # curr_sum = 0
         
-        for i, num in enumerate(nums):
-            curr_sum += num
+        # for i, num in enumerate(nums):
+        #     curr_sum += num
             
-            if k != 0:
-                remainder = curr_sum % k
-            else:
-                remainder = curr_sum
+        #     if k != 0:
+        #         remainder = curr_sum % k
+        #     else:
+        #         remainder = curr_sum
             
-            if remainder in remainder_map:
-                # Check if length >= 2
-                if i - remainder_map[remainder] >= 2:
+        #     if remainder in remainder_map:
+        #         # Check if length >= 2
+        #         if i - remainder_map[remainder] >= 2:
+        #             return True
+        #     else:
+        #         # Store first occurrence only
+        #         remainder_map[remainder] = i
+        
+        # return False
+        seen = {0:-1} # rem : index
+        cur = 0
+
+        for ind,num in enumerate(nums):
+            cur += num
+            rem = cur % k
+            if rem < 0:
+                rem += k
+            if rem in seen:
+                if ind - seen[rem] >= 2:
                     return True
-            else:
-                # Store first occurrence only
-                remainder_map[remainder] = i
-        
+            else: # we just have to store the first index we encounter because that gives the largest sub arr
+                seen[rem] = ind
         return False
     
     

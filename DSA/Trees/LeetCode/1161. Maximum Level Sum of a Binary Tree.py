@@ -38,9 +38,3 @@ class Solution:
                     max_level = level 
             return max_level
         return bfs(root)
-
-                
-
-
-
-        

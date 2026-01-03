@@ -104,3 +104,57 @@ class Solution:
                     
                 
             
+
+# attempt 2 
+# bfs 
+class Solution:
+    def islandPerimeter(self, grid: List[List[int]]) -> int:
+        # bfs(0,1)
+        def bfs(row,col):
+            directions = [(1,0),(-1,0),(0,1),(0,-1)]  # R L U D 
+            q = deque([(row,col)])
+            visited = set()
+            visited.add((row,col))
+            perimeter = 0
+
+            while q:
+
+                r,c = q.popleft()
+
+                for dr,dc in directions:
+                    nr,nc = r+dr,c+dc
+
+                    # case 1: let me check if the nr, nc are out of bounds
+                    if nr >= rows or nr < 0 or nc >= cols or nc < 0:
+                        # from our concept we will add it to permiter if its out of bounds or water, that imples we are at the edge of the land that should be used for perimeter calculations
+                        perimeter += 1
+                        continue # skip to next iter 
+                    
+                    # case 2: if we encounter a water shore, we are at the edge of the lands we increase the perimeter
+                    if grid[nr][nc] == 0:
+                        perimeter += 1
+                        continue # skip to next iter 
+
+                    # check if the nr nc is not laready visited
+                    if (nr,nc) not in visited:
+                        # once both the above cases faield that means we encountered a land, we add it to the queue and dont increase the perimter
+                        q.append((nr,nc))
+                        #as add it to visited set
+                        visited.add((nr,nc))
+            return perimeter
+                    
+
+
+
+
+
+
+        
+        rows = len(grid)
+        cols = len(grid[0])
+        for r in range(rows):
+            for c in range(cols):
+                if grid[r][c] == 1:
+                   return bfs(r,c)
+                
+        

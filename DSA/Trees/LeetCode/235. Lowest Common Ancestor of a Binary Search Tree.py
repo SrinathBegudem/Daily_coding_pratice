@@ -8,7 +8,7 @@
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
 
-        #optimal iterative solution 
+        #optimal iterative solution TIME = o(h) and space = o(1)
 
         def iter_sol(node):
             while node:

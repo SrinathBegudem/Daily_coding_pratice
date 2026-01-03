@@ -25,7 +25,7 @@ class Solution:
 
                 # when the above loop breaks we are at one node pass left most leaf node
                 # process that node
-                cur = stack.pop() # this will pop left most leaf
+                cur = stack.pop() # this will pop left most leaf first 
                 res.append(cur.val)
                 cur = cur.right # add the right node and continue 
             return res 

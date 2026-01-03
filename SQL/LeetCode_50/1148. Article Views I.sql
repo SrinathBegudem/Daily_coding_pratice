@@ -15,3 +15,16 @@ WHERE
 ORDER BY
     id
 
+-- how SQL exucetes 
+-- WHERE → streaming filter, no storage
+
+-- DISTINCT → needs memory, uses hashing (uses memory)
+
+-- ORDER BY → needs sorting, may spill to disk (uses memory)
+
+-- GROUP BY → heavier than DISTINCT
+
+-- its streams rows one by one to filter for where clause and after that
+-- it passes to distinct operator here we need to send streams of output that are
+-- distinct so here we will have hash based operation + memory 
+-- after that it sorts 

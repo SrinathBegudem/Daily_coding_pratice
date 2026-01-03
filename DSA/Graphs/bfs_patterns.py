@@ -29,6 +29,81 @@ WHY BFS OVER DFS?
 8. Bidirectional BFS - meet in the middle (advanced)
 9. 0-1 BFS - weighted graphs with 0/1 weights (advanced)
 
+when we are asked minimum we do bfs?
+Yeah, almost always when the question says closest / nearest / minimum number of steps, the correct approach is BFS, not DFS.
+
+Let me explain it in a simple, clean way so you remember the rule forever.
+
+✅ When do we use BFS?
+Any time you see these keywords:
+
+closest
+
+nearest
+
+minimum distance
+
+minimum steps
+
+shortest path
+
+fewest operations
+
+first time you reach X
+
+BFS is the natural answer because:
+
+✔ BFS explores in rings (level by level)
+
+So the first time you reach a target, it is always the shortest path.
+
+DFS cannot guarantee that.
+
+🔥 Example patterns where BFS is the correct tool
+1. “Find nearest 0 / nearest 1”
+
+LC 542 (01 Matrix)
+
+LC 286 (Walls and Gates)
+
+These are multi-source BFS problems.
+
+2. “Minimum steps to reach target”
+
+LC 909 Snakes and Ladders
+
+LC 752 Open the Lock
+
+LC 127 Word Ladder
+
+3. “Nearest exit / nearest food”
+
+LC 1926 Nearest Exit in Maze
+
+LC 1730 Shortest Path to Get Food
+
+4. “Rotting spreads in minutes”
+
+LC 994 Rotting Oranges
+
+Also a BFS layer-by-layer problem.
+
+👇 When do we not use BFS?
+
+If the question does not care about distance or minimum anything,
+and only wants reachability, components, connected regions,
+then DFS or BFS both work.
+
+Examples:
+
+Number of islands
+
+Flood fill
+
+Connected components in graph
+
+Those do not require distance, so DFS or BFS is fine.
+
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
@@ -38,7 +113,8 @@ class BFSPatterns:
     # ═══════════════════════════════════════════════════════════════════════
     # PATTERN 1: BASIC BFS ⭐⭐⭐
     # ═══════════════════════════════════════════════════════════════════════
-    
+    # Yeah, almost always when the question says closest / nearest /
+    #  minimum number of steps, the correct approach is BFS, not DFS.
     def bfs_basic(self, graph, start):
         """
         Standard BFS traversal from single source
@@ -80,6 +156,14 @@ class BFSPatterns:
     # PATTERN 2: BFS WITH LEVEL TRACKING ⭐⭐⭐
     # ═══════════════════════════════════════════════════════════════════════
     
+    # IMPORTANT NOTE: level order traversal can be done by both deque and 
+    #normal lists ( 2 lists ) both are optimal, just learn if in case interviewer
+    #ask to do level order traverseal without deque naturally then follow then second code.
+    # both of this are optimal and only works for bfs level order traverse
+    # so deque is used mostly by people because deque we can do normally bfs
+    # in normal bfs we need to pop one element from left using list its take o(n)
+    # not at all recommended, so we use deque which works for normal bfs and level order.
+
     def bfs_with_levels(self, graph, start):
         """
         BFS that processes nodes level by level
@@ -127,6 +211,32 @@ class BFSPatterns:
             levels.append(current_level)
         
         return levels
+    
+    # this is code for level order traversal without deque naturally which is
+    #optimal as deque and happens naturally for interview purpose and while solving
+    # lc 1466 graph problem by depthi talsari.
+    def bfs_levels_list(graph, start):
+        visited = {start}
+        queue = [start]
+        levels = []
+
+        while queue:
+            next_queue = []
+            current = []
+
+            for node in queue:
+                current.append(node)
+
+                for nei in graph[node]:
+                    if nei not in visited:
+                        visited.add(nei)
+                        next_queue.append(nei)
+
+            levels.append(current)
+            queue = next_queue
+
+        return levels
+
     
     
     def bfs_with_distance(self, graph, start):
@@ -237,13 +347,6 @@ class BFSPatterns:
                     queue.append((neighbor, dist + 1))
         
         return distances
-
-
-
-
-
-
-
 
 
 

@@ -78,6 +78,12 @@
    ✅ Pattern 12: Dijkstra's Algorithm (Weighted Shortest Path) ⭐⭐
    ✅ Pattern 13: Union Find (Disjoint Set Union) ⭐⭐
 
+Missing patterns 
+    MST: Kruskal (Union Find) and Prim (heap). 
+    This shows up as “minimum cost to connect…”
+    0-1 BFS: only when weights are 0 or 1. 
+    It’s a common trick upgrade over Dijkstra.
+
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
@@ -274,11 +280,14 @@ class GraphTraversalPatterns:
         DFS using recursion (most common and cleanest)
         """
         result = []
-        visited = set()
-        
+        visited = set() 
+
         def dfs(node):
             # Mark as visited
-            visited.add(node)
+            visited.add(node)# we add visited at the top because this is the edge
+        #case if we add it in for loop like bfs we will miss to add the start node to the set
+        #casuing problem to recount it failing some problems. so in recursion add to set at the top
+        
             result.append(node)
             
             # Visit all unvisited neighbors
@@ -294,6 +303,78 @@ class GraphTraversalPatterns:
     
     def dfs_iterative(self, graph: Dict[int, List[int]], start: int) -> List[int]:
         """
+        use this code if and only if they want us to match recursion traversal order
+        other wise use this below code.
+        "
+        The below (this code does the thin its same to same as bfs just uses stack and pop instead of popleft)
+        stack = [start]
+        visited = set()
+        visited.add(start)
+        res = []
+        
+        while stack:
+            node = stack.pop()  # Pop from end (LIFO)
+            res.append(node)
+            
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    stack.append(neighbor)
+        
+        return res        
+        
+        ex :graph = {
+        0: [1, 2],
+        1: [3, 4],
+        2: [5],
+        3: [], 4: [], 5: []
+        }
+        start = 0
+        Recursive DFS (natural neighbor order)
+
+        It goes to the first neighbor as soon as it sees it:
+        visit 0
+        go to 1
+        go to 3
+        then 4
+        then go back and go to 2
+        then 5
+        Output:
+        [0, 1, 3, 4, 2, 5]
+
+        Your iterative DFS (push neighbors in normal order)
+        Your loop does:
+        At node 0: push 1 then 2 → stack becomes [1, 2]
+        Pop gives 2 first → so it goes to 2 before 1.
+        Then from 2 push 5, etc.
+        Output:
+        [0, 2, 5, 1, 4, 3] (it can differ like this)
+
+        How to fix the order to match recursive DFS
+        When using a stack, if you want the same order as recursion, 
+        you must push neighbors in reverse:
+        "
+        stack = [start]
+        visited = {start}
+        res = []
+
+        while stack:
+            node = stack.pop()
+            res.append(node)
+
+            for neighbor in reversed(graph.get(node, [])):  # ✅ reverse here
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    stack.append(neighbor)
+
+        return res
+        " 
+        The above gives the output exactly as recursive dfs
+
+
+
+
+
         DFS using explicit stack (iterative)
         Useful when recursion depth is a concern
         
@@ -400,7 +481,9 @@ class GraphTraversalPatterns:
     💡 LEETCODE PROBLEMS:
     - LeetCode 1091: Shortest Path in Binary Matrix (medium) ⭐⭐
     - LeetCode 752: Open the Lock (medium)
+    - LeetCode 1926 – Nearest Exit from Entrance in Maze (grid BFS shortest exit)
     - LeetCode 127: Word Ladder (hard) ⭐⭐⭐
+    - LeetCode 773 – Sliding Puzzle
     - LeetCode 433: Minimum Genetic Mutation (medium)
     """
     
@@ -654,8 +737,14 @@ class GraphTraversalPatterns:
     - LeetCode 261: Graph Valid Tree (medium) ⭐
     - LeetCode 684: Redundant Connection (medium)
     """
+    # for undirect cycle detection the back edge is detect by parent tracking
+    # for every nei there are 2 case 
+    # case 1: it is unvisted ( visit it )
+    # case 2 : it is visited 
+        #subcase 1 : if visited and its the parent node then no cycle its normal 
+        #subcase 2: if visited but not parent case then there is cycle and that is back edge 
     
-    def has_cycle_undirected(self, n: int, edges: List[List[int]]) -> bool:
+    def has_cycle_undirected_dfs(self, n: int, edges: List[List[int]]) -> bool:
         """
         Detect cycle in undirected graph using DFS
         """
@@ -686,9 +775,106 @@ class GraphTraversalPatterns:
                     return True
         
         return False
+    def has_cycle_undirected_dfs(self, n: int, edges: List[List[int]]) -> bool:
+        """
+        Detect cycle in undirected graph using BFS
+        """
+        # Build adjacency list. Time: O(E)
+        graph = defaultdict(list)
+        for u, v in edges:
+            graph[u].append(v)
+            graph[v].append(u)
+
+
+        visited = set()
+
+        def bfs(start: int) -> bool:
+            q = deque([start])
+            visited.add(start)
+
+            parent = {start: -1}   # parent[node] = node that discovered it
+
+            while q:
+                node = q.popleft()
+
+                for nei in graph[node]:
+                    if nei not in visited:
+                        visited.add(nei)
+                        parent[nei] = node
+                        q.append(nei)
+                    else:
+                        # nei is already visited
+                        # If nei is NOT the parent of node -> cycle
+                        if nei != parent[node]:
+                            return True
+            return False
+        
+        # this is also valid we dont really need a hash map to track parent
+        # def bfs(start: int) -> bool:
+        #     q = deque([(start, -1)])  # (node, parent)
+        #     visited.add(start)
+
+        #     while q:
+        #         node, parent = q.popleft()
+        #         for nei in graph[node]:
+        #             if nei not in visited:
+        #                 visited.add(nei)
+        #                 q.append((nei, node))
+        #             elif nei != parent:
+        #                 return True
+        #     return False
+
+        # Handle disconnected components
+        for node in range(n):
+            if node not in visited:
+                if bfs(node,-1):
+                    return True
+
+        return False
     
+    """
+    Because that “undirected trick” is based on a fact that is only true for undirected graphs:
+
+        In an undirected DFS/BFS tree, the only already-visited neighbor you should see is your parent.
+        If you see a visited neighbor that is not your parent, you must have a cycle.
+
+        That statement breaks in directed graphs.
+        1) Directed graphs can have “visited neighbor” without any cycle (false positive)
+
+        Example (this graph is a DAG, no cycle):
+        0 → 1
+        0 → 2
+        1 → 2
+        If you start DFS/BFS at 0:
+        you visit 2 from 0 first (so 2 becomes visited)
+        later when you are at node 1, you see edge 1 → 2
+        2 is already visited, and 2 is not the “parent” of 1
+        Undirected rule would scream “cycle”, but there is no cycle. That edge is just a cross edge in a directed acyclic graph.
+
+        2) Directed graphs can have a real cycle that goes back to the parent (false negative)
+
+        Example (this has a cycle):
+        0 → 1
+        1 → 2
+        2 → 1
+        If your “undirected” logic says “ignore visited neighbor if it equals parent”, then at node 2 you see neighbor 1:
+        1 is visited
+        1 is also the node that discovered 2 (the parent)
+        undirected logic would ignore it
+        but 2 → 1 is exactly the cycle edge
+        So in directed graphs, “visited and not parent” is not the right test.
+        What works for directed cycle detection
+        You need to detect a back edge to a node that is still in the current DFS path, not just “visited sometime in the past”.
+
+        That’s why we use 3 states (or recursion stack):
+        0 = unvisited
+        1 = visiting (currently in recursion stack / current path)
+        2 = visited (fully done)
+        If you ever see an edge to a node in state 1, that is a cycle.
+    """
+        
     
-    def has_cycle_directed(self, n: int, edges: List[List[int]]) -> bool:
+    def has_cycle_directed_dfs(self, n: int, edges: List[List[int]]) -> bool:
         """
         Detect cycle in directed graph using DFS with recursion stack
         
@@ -696,6 +882,17 @@ class GraphTraversalPatterns:
         - 0: UNVISITED (white)
         - 1: VISITING (gray - in recursion stack)
         - 2: VISITED (black - done)
+        The “3 states” is just a label you store for each node.
+        It is not some special Python feature, it’s just a normal array or dict.
+        Think of it like a status badge on every node while DFS is running.
+        The 3 states (per node)
+        We store one of these values for every node:
+        0 = unvisited
+        We have not started DFS from this node yet.
+        1 = visiting
+        We are currently inside DFS for this node, meaning it is on the current recursion path (call stack).
+        2 = visited
+        We finished DFS for this node completely, we have returned from it.
         """
         graph = defaultdict(list)
         for u, v in edges:
@@ -733,6 +930,43 @@ class GraphTraversalPatterns:
         
         return False
     
+# CODE WITH 2 sets a bit easier to understand
+    def has_cycle_directed_two_sets(self, n: int, edges: List[List[int]]) -> bool:
+        # Build adjacency list
+        graph = defaultdict(list)
+        for u, v in edges:
+            graph[u].append(v)
+
+        visited: Set[int] = set()   # fully processed nodes
+        path: Set[int] = set()      # nodes in current recursion stack (current DFS path)
+
+        def dfs(node: int) -> bool:
+            # If node is in current path, we found a back edge -> cycle
+            if node in path:
+                return True
+
+            # If already fully processed, no cycle from here
+            if node in visited:
+                return False
+
+            # Start exploring this node
+            path.add(node)
+
+            for nei in graph[node]:
+                if dfs(nei):
+                    return True
+
+            # Done exploring this node
+            path.remove(node)
+            visited.add(node) 
+            return False
+
+        # Handle disconnected components
+        for node in range(n):
+            if dfs(node):
+                return True
+
+        return False
     
     # ═══════════════════════════════════════════════════════════════════════
     # PATTERN 6: TOPOLOGICAL SORT
@@ -791,6 +1025,23 @@ class GraphTraversalPatterns:
         Topological sort using DFS (postorder)
         
         Returns empty list if cycle detected
+
+        Topological sort (DFS version) is:
+
+        Directed cycle detection with DFS states (unvisited, visiting, visited)
+        If you ever reach a visiting node again, that’s a cycle, so topo order is impossible.
+        One extra thing: when a node is fully done (all its outgoing neighbors are processed), you append it to result (postorder).
+        At the end you reverse result to get the topological order.
+
+        Nothing else “new” is happening. The cycle detection part is the same as directed cycle detection, and the topo order is just the postorder list.
+
+        Tiny intuition:
+        Edge is u -> v (u must come before v).
+        DFS finishes v before u (because u depends on v).
+        So you append u after v (postorder), then reverse to make u appear before v.
+        
+        JUST ADD RES OR STACK VAR AT THE END AFTER MARKING FULL VISITED AND REVERSE IT
+        THATS IT FOR TOPO SORT
         """
         graph = defaultdict(list)
         for u, v in edges:
@@ -801,42 +1052,89 @@ class GraphTraversalPatterns:
         
         def dfs(node):
             if state[node] == 1:  # Cycle detected
-                return False
-            if state[node] == 2:  # Already processed
                 return True
+            if state[node] == 2:  # Already processed
+                return False
             
             state[node] = 1  # Mark as visiting
             
             for neighbor in graph[node]:
-                if not dfs(neighbor):
-                    return False
+                if dfs(neighbor):
+                    return True
             
             state[node] = 2  # Mark as visited
             result.append(node)  # Add in postorder
-            return True
+            return False
         
         # Process all nodes
         for node in range(n):
             if state[node] == 0:
-                if not dfs(node):
+                if dfs(node):
                     return []  # Cycle found
         
         return result[::-1]  # Reverse postorder
     
+
+    # topo sort with dfs and 2 sets 
+    def topo_sort_two_sets(self, n: int, edges: List[List[int]]) -> List[int]:
+        graph = defaultdict(list)
+        for u, v in edges:
+            graph[u].append(v) 
+            # here make sure you follow u = preq(comes_first), v = course(comes after)
+
+        visited: Set[int] = set()  # done
+        path: Set[int] = set()     # in current recursion stack
+        order: List[int] = []
+
+        def dfs(node):
+            if node in path:
+                return True          # cycle found
+            if node in visited:
+                return False         # no cycle from here
+
+            path.add(node)
+            for nei in graph[node]:
+                if dfs(nei):         # cycle in neighbor
+                    return True
+            path.remove(node)
+
+            visited.add(node)
+            order.append(node)       # postorder
+            return False             # no cycle
+
+        for node in range(n):
+            if node not in visited:
+                if dfs(node):        # cycle detected
+                    return []
+        return order[::-1]
     
     def topological_sort_kahn(self, n: int, edges: List[List[int]]) -> List[int]:
         """
         Topological sort using Kahn's Algorithm (BFS with in-degree)
         
         More intuitive for beginners!
+        DOnt confuse btw u and v while building graph 
+        Meaning:
+        u = Prerequisite / Dependency / Must come first
+        v = Course / Task / Comes after
+        u must be completed BEFORE
+
+        universal remeber 
+        graph[prerequisite].append(course)
+        in_degree[course] += 1
+
+        or more genrally 
+    
+        graph[comes_first].append(comes_after)
+        in_degree[comes_after] += 1
         """
         graph = defaultdict(list)
         in_degree = [0] * n
         
         # Build graph and calculate in-degrees
         for u, v in edges:
-            graph[u].append(v)
-            in_degree[v] += 1
+            graph[u].append(v) # u → v (u comes BEFORE v)
+            in_degree[v] += 1  # v depends on u
         
         # Start with nodes having no dependencies
         queue = deque([i for i in range(n) if in_degree[i] == 0])
