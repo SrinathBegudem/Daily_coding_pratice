@@ -117,6 +117,11 @@ class TreePatterns:
         """
         Preorder traversal using recursion
         Most intuitive and clean
+        memory trick: process node , then add right to stack and then left
+        because stack follows LIFO (So left is processed first)
+        for postorder : the order is LRN, we first fo reverse NRL
+        That means we do N first then, visit R next that means append LEFT first
+        and then we visit L at the end that means push that first to stack
         """
         result = []
         
@@ -159,6 +164,7 @@ class TreePatterns:
         stack = [root]
         
         while stack:
+            #process the node
             node = stack.pop()
             result.append(node.val)
             
@@ -424,12 +430,16 @@ class TreePatterns:
         Postorder using stack (iterative)
         
         🔑 TRICK: Use two stacks OR reverse preorder!
-        
+        Postorder is L R N. If you do N R L and then reverse, you get L R N.
         Method 1: Reverse Preorder
         - Preorder: Root → Left → Right
         - Modified: Root → Right → Left (swap left/right)
         - Reverse result: Left → Right → Root (Postorder!)
+        for postorder : the order is LRN, we first fo reverse NRL
+        That means we do N first then, visit R next that means append LEFT first
+        and then we visit L at the end that means push that first to stack
         """
+        #Postorder is L R N. If you do N R L and then reverse, you get L R N.
         if not root:
             return []
         

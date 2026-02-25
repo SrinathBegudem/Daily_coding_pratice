@@ -166,10 +166,10 @@ class SlidingWindowPatterns:
     - Sliding window: 10,000 operations (1000x faster!)
     
     💡 LEETCODE PROBLEMS:
-    - LeetCode 643: Maximum Average Subarray I (easy) ⭐⭐⭐
-    - LeetCode 1456: Maximum Number of Vowels (medium) ⭐⭐
-    - LeetCode 1343: Number of Sub-arrays of Size K (medium)
-    - LeetCode 2090: K Radius Subarray Averages (medium)
+    - LeetCode 643: Maximum Average Subarray I (easy) ⭐⭐⭐ ✅
+    - LeetCode 1456: Maximum Number of Vowels (medium) ⭐⭐ ✅
+    - LeetCode 1343: Number of Sub-arrays of Size K (medium) ✅
+    - LeetCode 2090: K Radius Subarray Averages (medium)✅
     """
     
     def max_sum_fixed_window(self, arr: List[int], k: int) -> int:
@@ -381,25 +381,41 @@ class SlidingWindowPatterns:
         🔑 KEY: Use hashmap to track last seen position
         When duplicate found, jump left pointer
         """
-        char_index = {}  # char -> last seen index
+        # the chapgpt and claude gave hashmap version but i did with hashset way better sol
+        # char_index = {}  # char -> last seen index
+        # left = 0
+        # max_length = 0
+        
+        # for right in range(len(s)):
+        #     char = s[right]
+            
+        #     # If char seen and in current window
+        #     if char in char_index and char_index[char] >= left:
+        #         # Move left past the previous occurrence
+        #         left = char_index[char] + 1
+            
+        #     # Update last seen position
+        #     char_index[char] = right
+            
+        #     # Update maximum length
+        #     max_length = max(max_length, right - left + 1)
+        
+        # return max_length
+        # my own solution with hashset(), similar to 219. Contains Duplicate II this pattern
+        window = set()
         left = 0
-        max_length = 0
-        
+        longest = 0
+
         for right in range(len(s)):
-            char = s[right]
+            if s[right] in window:
+                while left < right and s[right] in window:
+                    window.remove(s[left])
+                    left += 1
             
-            # If char seen and in current window
-            if char in char_index and char_index[char] >= left:
-                # Move left past the previous occurrence
-                left = char_index[char] + 1
-            
-            # Update last seen position
-            char_index[char] = right
-            
-            # Update maximum length
-            max_length = max(max_length, right - left + 1)
-        
-        return max_length
+            window.add(s[right])
+            longest = max(longest, right - left + 1)
+        return longest
+    
     
     
     def longest_substring_k_distinct(self, s: str, k: int) -> int:

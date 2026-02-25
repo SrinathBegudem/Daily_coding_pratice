@@ -2250,6 +2250,22 @@ class ArrayPatterns:
     # ═══════════════════════════════════════════════════════════════════════
     # PATTERN 12: BOYER-MOORE VOTING (Majority Element)
     # ═══════════════════════════════════════════════════════════════════════
+# COMMON PATTERN TO SOLVE BOTH MAJORITY ELEMENT 1 and MAJORITY ELEMENT 2 USING HASHMAP
+        # def findMajorityElements(nums, k):
+        #     """
+        #     Find all elements appearing > n/k times
+        #     k=2 for >n/2 (Majority Element I) -> only one possible element
+        #     k=3 for >n/3 (Majority Element II) -> 2 possible elements
+        #     """
+        #     counts = Counter(nums)
+        #     result = []
+        #     threshold = len(nums) // k
+
+        #     for key, val in counts.items():
+        #         if val > threshold:
+        #             result.append(key)
+
+        #     return result
     """
     🎯 CORE CONCEPT:
     Find element that appears more than ⌊n/2⌋ or ⌊n/3⌋ times with O(1) space.

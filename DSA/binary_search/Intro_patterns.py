@@ -121,14 +121,78 @@ class BinarySearchMastery:
         
         # Target not found in array
         return -1
-    
-    
+# type 2 of binary search 
+        # lo = 0
+        # hi = len(nums) - 1
+        # while lo < hi:
+        #     mid = lo + (hi-lo)//2
+        #     if nums[mid] < target:
+        #         lo = mid + 1
+        #     else:
+        #         hi = mid
+        # return lo if nums[lo] == target else -1
+"""
+       ""
+        final notes
+
+        bisect left and lower bound always gives you the first occurence or crct insert position 
+        -> if asked insert position directly use lower bound or bisect_left
+        bisect right and upper bound gives you the right index position which is index after the target 
+        -> so we need some edge case handle either to check if the l > 0 and l-1 is target if yes return l-1
+        else target doesnt exisit return l 
+
+        IMP NOTES:
+        When asked insert position use bisect left or lower bound it will alwyas gives the right answer
+        lower_bound == bisect_left
+        upper_bound == bisect_right
+        lower_bound and upper bound is pattern 
+        bisect_left and bisect_right is implementation of this pattern in library form.
+        ""
+        ##bisect left
+        # return bisect.bisect_left(nums,target) # directly gives the first occurence and left insert position
+        ##bisect_right
+        # indx = bisect.bisect_right(nums,target)
+        # # if target exist isect right gives next idex
+        # if indx > 0:
+        #     if nums[indx-1] == target:
+        #         return indx - 1
+        # return indx
+        
+        # def lower_bound():
+        #     l = 0 
+        #     r = len(nums) 
+        #     while l < r:
+        #         m = (l+r)//2
+        #         if nums[m] < target:
+        #             l = m + 1
+        #         else:
+        #             r = m
+        #     return l
+        # return lower_bound()
+
+        def upper_bound():
+            l = 0 
+            r = len(nums) 
+            while l < r:
+                m = (l+r)//2
+                if nums[m] <= target:
+                    l = m + 1
+                else:
+                    r = m
+            if l > 0 and nums[l-1] == target:
+                return l-1
+            return l
+        return upper_bound()          
+"""  
+
     # ═══════════════════════════════════════════════════════════════════════
-    # PATTERN 2: LOWER BOUND (FIRST OCCURRENCE / LEFT BOUNDARY)
+    # PATTERN 2: LOWER BOUND (FIRST OCCURRENCE / LEFT BOUNDARY) bisect_left
+    # use this to find insert position
     # ═══════════════════════════════════════════════════════════════════════
     """
     🎯 USE CASE: Find FIRST occurrence OR insertion position (leftmost boundary)
-    
+    For Search Insert Position, you should use the lower-bound 
+    pattern and do NOT do the existence-check block. You simply return left
     📊 TEMPLATE: EXCLUSIVE [left, right)
     ⏱️  Time: O(log n) | Space: O(1)
     
@@ -237,6 +301,8 @@ class BinarySearchMastery:
     # ═══════════════════════════════════════════════════════════════════════
     """
     🎯 USE CASE: Find LAST occurrence OR position after last occurrence
+    For Search Insert Position, you should use the lower-bound 
+    pattern and do NOT do the existence-check block. You simply return left
     
     📊 TEMPLATE: EXCLUSIVE [left, right)
     ⏱️  Time: O(log n) | Space: O(1)

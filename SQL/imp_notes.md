@@ -2802,3 +2802,1211 @@ Memorize this short phrase:
 
 > LEFT JOIN finds missing things,
 > INNER JOIN finds matching things.
+
+# window function (IMP)
+1. Aggregate Functions (SUM, AVG, COUNT, MIN, MAX)
+With ORDER BY → Running/Cumulative
+SUM(value) OVER (ORDER BY day)     -- Running sum
+AVG(value) OVER (ORDER BY day)     -- Running average
+COUNT(*) OVER (ORDER BY day)       -- Running count
+MIN(value) OVER (ORDER BY day)     -- Running minimum
+MAX(value) OVER (ORDER BY day)     -- Running maximum
+Apply Code
+Example:
+
+day | value | SUM | AVG | COUNT | MIN | MAX
+----|-------|-----|-----|-------|-----|----
+1   | 10    | 10  | 10  | 1     | 10  | 10
+2   | 20    | 30  | 15  | 2     | 10  | 20
+3   | 5     | 35  | 11.7| 3     | 5   | 20
+Without ORDER BY → Total (Same for all rows)
+SUM(value) OVER ()  -- Total sum for all rows
+Apply Code
+Example:
+
+day | value | SUM (no ORDER BY)
+----|-------|------------------
+1   | 10    | 35
+2   | 20    | 35
+3   | 5     | 35
+2. ROW_NUMBER() - Sequential numbering
+With ORDER BY → Ordered sequence
+ROW_NUMBER() OVER (ORDER BY day)
+Apply Code
+✅ Assigns unique numbers based on order
+
+Example:
+
+day | value | ROW_NUMBER
+----|-------|------------
+1   | 10    | 1
+2   | 20    | 2
+3   | 5     | 3
+Without ORDER BY → Random order
+ROW_NUMBER() OVER ()
+Apply Code
+⚠️ Numbers rows but order is unpredictable
+
+3. RANK() & DENSE_RANK() - Ranking with ties
+With ORDER BY → Ranks based on values
+RANK() OVER (ORDER BY score DESC)
+DENSE_RANK() OVER (ORDER BY score DESC)
+Apply Code
+Example:
+
+score | RANK | DENSE_RANK
+------|------|------------
+100   | 1    | 1
+100   | 1    | 1    ← same rank
+95    | 3    | 2    ← RANK skips 2, DENSE_RANK doesn't
+90    | 4    | 3
+Without ORDER BY → Meaningless (all get rank 1)
+RANK() OVER ()  -- ❌ Not useful
+Apply Code
+4. LAG() & LEAD() - Access previous/next rows
+Requires ORDER BY
+LAG(value) OVER (ORDER BY day)      -- Previous row value
+LAG(value, 2) OVER (ORDER BY day)   -- 2 rows before
+LEAD(value) OVER (ORDER BY day)     -- Next row value
+LEAD(value, 2) OVER (ORDER BY day)  -- 2 rows after
+Apply Code
+Example:
+
+day | value | LAG(value) | LEAD(value)
+----|-------|------------|------------
+1   | 10    | NULL       | 20
+2   | 20    | 10         | 5
+3   | 5     | 20         | NULL
+Without ORDER BY → Random/meaningless
+⚠️ Cannot work properly without ORDER BY
+
+5. FIRST_VALUE() & LAST_VALUE()
+With ORDER BY → First/last in ordered set
+FIRST_VALUE(value) OVER (ORDER BY day)
+LAST_VALUE(value) OVER (ORDER BY day 
+    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+Apply Code
+Example:
+
+day | value | FIRST_VALUE | LAST_VALUE
+----|-------|-------------|------------
+1   | 10    | 10          | 5
+2   | 20    | 10          | 5
+3   | 5     | 10          | 5
+⚠️ Note: LAST_VALUE needs frame specification to work correctly
+
+Quick Summary Table:
+Function	Needs ORDER BY?	With ORDER BY	Without ORDER BY
+SUM/AVG/COUNT	No	Running total	Total sum
+MIN/MAX	No	Running min/max	Overall min/max
+ROW_NUMBER	No	Sequential by order	Random order
+RANK/DENSE_RANK	Yes	Proper ranking	All rank 1
+LAG/LEAD	Yes	Previous/next row	Meaningless
+FIRST_VALUE/LAST_VALUE	Yes	First/last in order	Unpredictable
+Pattern Recognition:
+ORDER BY controls:
+
+Direction → Which rows are included up to current row
+Sequence → What "previous" and "next" mean
+Range → Default frame is "UNBOUNDED PRECEDING to CURRENT ROW"
+PARTITION BY controls:
+
+Grouping → Resets calculation for each group
+Example combining both:
+
+SELECT 
+    category,
+    day,
+    value,
+    SUM(value) OVER (PARTITION BY category ORDER BY day) as running_sum,
+    ROW_NUMBER() OVER (PARTITION BY category ORDER BY day) as row_num,
+    LAG(value) OVER (PARTITION BY category ORDER BY day) as prev_value
+FROM sales;
+Apply Code
+Practice challenge: Can you write a query that shows each day's value alongside:
+# imp
+🎯 ULTIMATE SQL PROBLEM-SOLVING CHEAT SHEET
+1️⃣ UNDERSTANDING THE SUBJECT (Who/What is the focus?)
+Phrase in Problem	Meaning	SQL Pattern
+"For each student"	Focus on students	GROUP BY student_id or PARTITION BY student_id
+"For each course"	Focus on courses	GROUP BY course_id
+"Per department"	Focus on departments	GROUP BY department_id
+"All students"	Return every student	Might need LEFT JOIN
+Rule: The word after "for each" or "per" tells you what to group by.
+
+2️⃣ WHEN TO USE DIFFERENT JOINS
+INNER JOIN vs LEFT JOIN vs RIGHT JOIN
+Phrase in Problem	Join Type	Why?
+"Find all students even if they have no enrollments"	LEFT JOIN	Keep all from left table (students)
+"Show only students who are enrolled"	INNER JOIN	Only matching records
+"Include students without courses"	LEFT JOIN	NULL allowed for courses
+"List every department, show employees if any"	LEFT JOIN	Keep all departments
+"Find employees who have a manager"	INNER JOIN	Must have match
+"Find employees including those without managers"	LEFT JOIN	NULL allowed for manager
+🔍 JOIN Detection Keywords
+INNER JOIN (Only matching records):
+
+"Find students who enrolled"
+"Get employees with a manager"
+"Show only active users"
+"List products that were sold"
+LEFT JOIN (Keep all from main table):
+
+"Find all students, show courses if any"
+"List every employee, even if no department"
+"Include users who haven't posted"
+"Show departments whether or not they have employees"
+RIGHT JOIN (Rare - usually rewrite as LEFT JOIN):
+
+"Find all courses, show students if enrolled"
+→ Better: "Find all students who enrolled in courses" with LEFT JOIN
+📝 Join Selection Framework
+Ask yourself:
+
+Do I need ALL records from one table?
+
+YES → Use LEFT/RIGHT JOIN (keep that table on LEFT/RIGHT)
+NO → Use INNER JOIN
+What if there's no match?
+
+Want to keep the row → LEFT/RIGHT JOIN
+Want to exclude the row → INNER JOIN
+Example:
+
+"Find all students and their grades. Include students who haven't taken any courses."
+
+Main table: Students (we want ALL students)
+Secondary table: Enrollments (may not exist)
+Answer: Students LEFT JOIN Enrollments
+3️⃣ WHEN TO USE GROUP BY
+Phrase in Problem	Need GROUP BY?	Aggregate Function
+"Total sales per product"	✅ YES	SUM(sales)
+"Average grade for each student"	✅ YES	AVG(grade)
+"Count how many courses each student took"	✅ YES	COUNT(course_id)
+"Highest salary in each department"	✅ YES	MAX(salary)
+"Find the student with the highest grade"	❌ NO	Use ORDER BY + LIMIT or window function
+"List all students and their grades"	❌ NO	Simple SELECT
+Rule: If you see "for each X, find [aggregate]" → GROUP BY X
+
+GROUP BY vs Window Function
+Scenario	Use GROUP BY	Use Window Function
+"Total sales per product"	✅ GROUP BY product_id	❌
+"Show each sale with total for that product"	❌	✅ SUM() OVER (PARTITION BY product_id)
+"Top 3 students per class"	❌	✅ ROW_NUMBER() OVER (PARTITION BY class_id)
+"Count of orders per customer"	✅ GROUP BY customer_id	❌
+Key difference:
+
+GROUP BY → Collapses rows (one result per group)
+Window Function → Keeps all rows (adds calculated column)
+4️⃣ AGGREGATION KEYWORDS
+Phrase	Function	Example
+"Total / Sum"	SUM()	Total revenue
+"Average / Mean"	AVG()	Average grade
+"Count / Number of"	COUNT()	Number of students
+"Highest / Maximum"	MAX()	Highest salary
+"Lowest / Minimum"	MIN()	Lowest price
+"Most recent"	MAX(date) or ORDER BY date DESC LIMIT 1	Latest login
+"Oldest"	MIN(date) or ORDER BY date ASC LIMIT 1	First order
+5️⃣ FILTERING: WHERE vs HAVING
+Use Case	Clause	When?
+Filter before grouping	WHERE	On raw column values
+Filter after grouping	HAVING	On aggregate results
+Examples:
+
+-- Filter students with grade > 80 BEFORE grouping
+SELECT student_id, AVG(grade)
+FROM Enrollments
+WHERE grade > 80  -- ✅ WHERE (raw data)
+GROUP BY student_id;
+
+-- Filter students with average > 80 AFTER grouping
+SELECT student_id, AVG(grade)
+FROM Enrollments
+GROUP BY student_id
+HAVING AVG(grade) > 80;  -- ✅ HAVING (aggregated result)
+Apply Code
+Rule: If filtering involves SUM(), AVG(), COUNT() → use HAVING
+
+6️⃣ RANKING & TOP N PROBLEMS
+Phrase in Problem	SQL Pattern
+"Top 3 salaries per department"	ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC) + WHERE rank <= 3
+"Highest grade for each student"	ROW_NUMBER() OVER (PARTITION BY student_id ORDER BY grade DESC) + WHERE rank = 1
+"Second highest salary"	ORDER BY salary DESC LIMIT 1 OFFSET 1 or DENSE_RANK()
+"Nth highest value"	Window function with rank = N
+When to use each ranking function:
+
+Function	Ties?	Gaps?	Use When
+ROW_NUMBER()	No	No	Need unique rank (1,2,3,4...)
+RANK()	Yes	Yes	OK with gaps (1,1,3,4...)
+DENSE_RANK()	Yes	No	No gaps (1,1,2,3...)
+7️⃣ SUBQUERY vs JOIN vs WINDOW FUNCTION
+Scenario	Best Approach	Example
+"Students whose grade > class average"	Subquery in WHERE	WHERE grade > (SELECT AVG(grade)...)
+"Add average grade alongside each record"	Window Function	AVG(grade) OVER (PARTITION BY class_id)
+"Combine data from 2 tables"	JOIN	Students JOIN Enrollments
+"Top N per group"	Window Function	ROW_NUMBER() OVER (PARTITION BY...)
+8️⃣ COMMON TRICK PATTERNS
+Pattern 1: "In case of a tie"
+Phrase: "If multiple X have the same Y, choose the one with smallest/largest Z"
+
+Solution: Add secondary sorting
+
+ROW_NUMBER() OVER (
+    PARTITION BY student_id 
+    ORDER BY grade DESC, course_id ASC  -- Secondary sort
+)
+Apply Code
+Pattern 2: "All X even if no Y"
+Phrase: "List all students, even if they haven't enrolled"
+
+Solution: LEFT JOIN
+
+SELECT s.student_id, e.course_id
+FROM Students s
+LEFT JOIN Enrollments e ON s.student_id = e.student_id;
+Apply Code
+Pattern 3: "For each X, find Y"
+Phrase: "For each department, find the highest salary"
+
+Solution: GROUP BY or Window Function
+
+-- If only need one row per department
+SELECT department_id, MAX(salary)
+FROM Employees
+GROUP BY department_id;
+
+-- If need all employee rows with department max
+SELECT 
+    employee_id,
+    salary,
+    MAX(salary) OVER (PARTITION BY department_id) as dept_max
+FROM Employees;
+Apply Code
+Pattern 4: "X who have/did Y"
+Phrase: "Students who enrolled in course 101"
+
+Solution: INNER JOIN or WHERE with subquery
+
+-- Join
+SELECT DISTINCT s.*
+FROM Students s
+JOIN Enrollments e ON s.student_id = e.student_id
+WHERE e.course_id = 101;
+
+-- Subquery
+SELECT *
+FROM Students
+WHERE student_id IN (
+    SELECT student_id FROM Enrollments WHERE course_id = 101
+);
+Apply Code
+Pattern 5: "X who never Y"
+Phrase: "Students who never enrolled" / "Customers who never ordered"
+
+Solution: LEFT JOIN + IS NULL or NOT EXISTS
+
+-- LEFT JOIN
+SELECT s.*
+FROM Students s
+LEFT JOIN Enrollments e ON s.student_id = e.student_id
+WHERE e.student_id IS NULL;
+
+-- NOT EXISTS
+SELECT *
+FROM Students s
+WHERE NOT EXISTS (
+    SELECT 1 FROM Enrollments e WHERE e.student_id = s.student_id
+);
+Apply Code
+Pattern 6: "Running/Cumulative"
+Phrase: "Running total" / "Cumulative sum" / "Up to date"
+
+Solution: Window function with ORDER BY
+
+SUM(value) OVER (ORDER BY date) as running_total
+Apply Code
+Pattern 7: "Consecutive"
+Phrase: "Find N consecutive days" / "Streak of X"
+
+Solution: Use ROW_NUMBER() and date difference
+
+SELECT 
+    date,
+    ROW_NUMBER() OVER (ORDER BY date) as rn,
+    DATE_SUB(date, INTERVAL rn DAY) as group_id
+FROM table_name;
+-- Consecutive dates will have same group_id
+Apply Code
+9️⃣ DECISION TREE
+Start: Read the problem
+    ↓
+Is there "for each" or "per"?
+    YES → Identify what to GROUP BY or PARTITION BY
+    NO → Continue
+    ↓
+Need ALL records from one table?
+    YES → LEFT/RIGHT JOIN
+    NO → INNER JOIN
+    ↓
+Need aggregate (sum/avg/count)?
+    YES → Use aggregate function
+        ↓
+        Filtering aggregate result?
+            YES → HAVING
+            NO → Continue
+    NO → Continue
+    ↓
+Need top N per group?
+    YES → Window function with ranking
+    NO → Continue
+    ↓
+Need to keep all rows but add calculation?
+    YES → Window function
+    NO → GROUP BY
+🔟 COMPLETE EXAMPLE WALKTHROUGH
+Problem:
+
+"Find the top 2 highest-paid employees in each department. Include departments even if they have fewer than 2 employees."
+
+Step-by-step breakdown:
+
+Subject: "in each department" → PARTITION BY department_id
+Goal: "top 2 highest-paid" → Ranking needed
+Constraint: "even if fewer than 2" → Need all departments (LEFT JOIN)
+Special: "top 2" → ROW_NUMBER() with filter <= 2
+Solution:
+
+SELECT 
+    d.department_name,
+    e.employee_name,
+    e.salary,
+    ROW_NUMBER() OVER (
+        PARTITION BY d.department_id 
+        ORDER BY e.salary DESC
+    ) as rank
+FROM Departments d
+LEFT JOIN Employees e ON d.department_id = e.department_id
+WHERE rank <= 2
+ORDER BY d.department_name, rank;
+Apply Code
+📋 QUICK REFERENCE CHECKLIST
+Before writing SQL, ask:
+
+ What is the subject? (for each X → GROUP BY or PARTITION BY X)
+ Need ALL records from a table? (YES → LEFT JOIN)
+ Need aggregation? (sum/avg/count → aggregate function)
+ Filtering before or after grouping? (before → WHERE, after → HAVING)
+ Need ranking or top N? (YES → window function)
+ Tie-breaker needed? (YES → secondary ORDER BY)
+ Need running total? (YES → window function with ORDER BY)
+🎯 ULTIMATE SQL PROBLEM-SOLVING CHEAT SHEET
+1️⃣ UNDERSTANDING THE SUBJECT (Who/What is the focus?)
+Phrase in Problem	Meaning	SQL Pattern
+"For each student"	Focus on students	GROUP BY student_id or PARTITION BY student_id
+"For each course"	Focus on courses	GROUP BY course_id
+"Per department"	Focus on departments	GROUP BY department_id
+"All students"	Return every student	Might need LEFT JOIN
+Rule: The word after "for each" or "per" tells you what to group by.
+
+2️⃣ WHEN TO USE DIFFERENT JOINS
+INNER JOIN vs LEFT JOIN vs RIGHT JOIN
+Phrase in Problem	Join Type	Why?
+"Find all students even if they have no enrollments"	LEFT JOIN	Keep all from left table (students)
+"Show only students who are enrolled"	INNER JOIN	Only matching records
+"Include students without courses"	LEFT JOIN	NULL allowed for courses
+"List every department, show employees if any"	LEFT JOIN	Keep all departments
+"Find employees who have a manager"	INNER JOIN	Must have match
+"Find employees including those without managers"	LEFT JOIN	NULL allowed for manager
+🔍 JOIN Detection Keywords
+INNER JOIN (Only matching records):
+
+"Find students who enrolled"
+"Get employees with a manager"
+"Show only active users"
+"List products that were sold"
+LEFT JOIN (Keep all from main table):
+
+"Find all students, show courses if any"
+"List every employee, even if no department"
+"Include users who haven't posted"
+"Show departments whether or not they have employees"
+RIGHT JOIN (Rare - usually rewrite as LEFT JOIN):
+
+"Find all courses, show students if enrolled"
+→ Better: "Find all students who enrolled in courses" with LEFT JOIN
+📝 Join Selection Framework
+Ask yourself:
+
+Do I need ALL records from one table?
+
+YES → Use LEFT/RIGHT JOIN (keep that table on LEFT/RIGHT)
+NO → Use INNER JOIN
+What if there's no match?
+
+Want to keep the row → LEFT/RIGHT JOIN
+Want to exclude the row → INNER JOIN
+Example:
+
+"Find all students and their grades. Include students who haven't taken any courses."
+
+Main table: Students (we want ALL students)
+Secondary table: Enrollments (may not exist)
+Answer: Students LEFT JOIN Enrollments
+3️⃣ WHEN TO USE GROUP BY
+Phrase in Problem	Need GROUP BY?	Aggregate Function
+"Total sales per product"	✅ YES	SUM(sales)
+"Average grade for each student"	✅ YES	AVG(grade)
+"Count how many courses each student took"	✅ YES	COUNT(course_id)
+"Highest salary in each department"	✅ YES	MAX(salary)
+"Find the student with the highest grade"	❌ NO	Use ORDER BY + LIMIT or window function
+"List all students and their grades"	❌ NO	Simple SELECT
+Rule: If you see "for each X, find [aggregate]" → GROUP BY X
+
+GROUP BY vs Window Function
+Scenario	Use GROUP BY	Use Window Function
+"Total sales per product"	✅ GROUP BY product_id	❌
+"Show each sale with total for that product"	❌	✅ SUM() OVER (PARTITION BY product_id)
+"Top 3 students per class"	❌	✅ ROW_NUMBER() OVER (PARTITION BY class_id)
+"Count of orders per customer"	✅ GROUP BY customer_id	❌
+Key difference:
+
+GROUP BY → Collapses rows (one result per group)
+Window Function → Keeps all rows (adds calculated column)
+4️⃣ AGGREGATION KEYWORDS
+Phrase	Function	Example
+"Total / Sum"	SUM()	Total revenue
+"Average / Mean"	AVG()	Average grade
+"Count / Number of"	COUNT()	Number of students
+"Highest / Maximum"	MAX()	Highest salary
+"Lowest / Minimum"	MIN()	Lowest price
+"Most recent"	MAX(date) or ORDER BY date DESC LIMIT 1	Latest login
+"Oldest"	MIN(date) or ORDER BY date ASC LIMIT 1	First order
+5️⃣ FILTERING: WHERE vs HAVING
+Use Case	Clause	When?
+Filter before grouping	WHERE	On raw column values
+Filter after grouping	HAVING	On aggregate results
+Examples:
+
+-- Filter students with grade > 80 BEFORE grouping
+SELECT student_id, AVG(grade)
+FROM Enrollments
+WHERE grade > 80  -- ✅ WHERE (raw data)
+GROUP BY student_id;
+
+-- Filter students with average > 80 AFTER grouping
+SELECT student_id, AVG(grade)
+FROM Enrollments
+GROUP BY student_id
+HAVING AVG(grade) > 80;  -- ✅ HAVING (aggregated result)
+Apply Code
+Rule: If filtering involves SUM(), AVG(), COUNT() → use HAVING
+
+6️⃣ RANKING & TOP N PROBLEMS
+Phrase in Problem	SQL Pattern
+"Top 3 salaries per department"	ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC) + WHERE rank <= 3
+"Highest grade for each student"	ROW_NUMBER() OVER (PARTITION BY student_id ORDER BY grade DESC) + WHERE rank = 1
+"Second highest salary"	ORDER BY salary DESC LIMIT 1 OFFSET 1 or DENSE_RANK()
+"Nth highest value"	Window function with rank = N
+When to use each ranking function:
+
+Function	Ties?	Gaps?	Use When
+ROW_NUMBER()	No	No	Need unique rank (1,2,3,4...)
+RANK()	Yes	Yes	OK with gaps (1,1,3,4...)
+DENSE_RANK()	Yes	No	No gaps (1,1,2,3...)
+7️⃣ SUBQUERY vs JOIN vs WINDOW FUNCTION
+Scenario	Best Approach	Example
+"Students whose grade > class average"	Subquery in WHERE	WHERE grade > (SELECT AVG(grade)...)
+"Add average grade alongside each record"	Window Function	AVG(grade) OVER (PARTITION BY class_id)
+"Combine data from 2 tables"	JOIN	Students JOIN Enrollments
+"Top N per group"	Window Function	ROW_NUMBER() OVER (PARTITION BY...)
+8️⃣ COMMON TRICK PATTERNS
+Pattern 1: "In case of a tie"
+Phrase: "If multiple X have the same Y, choose the one with smallest/largest Z"
+
+Solution: Add secondary sorting
+
+ROW_NUMBER() OVER (
+    PARTITION BY student_id 
+    ORDER BY grade DESC, course_id ASC  -- Secondary sort
+)
+Apply Code
+Pattern 2: "All X even if no Y"
+Phrase: "List all students, even if they haven't enrolled"
+
+Solution: LEFT JOIN
+
+SELECT s.student_id, e.course_id
+FROM Students s
+LEFT JOIN Enrollments e ON s.student_id = e.student_id;
+Apply Code
+Pattern 3: "For each X, find Y"
+Phrase: "For each department, find the highest salary"
+
+Solution: GROUP BY or Window Function
+
+-- If only need one row per department
+SELECT department_id, MAX(salary)
+FROM Employees
+GROUP BY department_id;
+
+-- If need all employee rows with department max
+SELECT 
+    employee_id,
+    salary,
+    MAX(salary) OVER (PARTITION BY department_id) as dept_max
+FROM Employees;
+Apply Code
+Pattern 4: "X who have/did Y"
+Phrase: "Students who enrolled in course 101"
+
+Solution: INNER JOIN or WHERE with subquery
+
+-- Join
+SELECT DISTINCT s.*
+FROM Students s
+JOIN Enrollments e ON s.student_id = e.student_id
+WHERE e.course_id = 101;
+
+-- Subquery
+SELECT *
+FROM Students
+WHERE student_id IN (
+    SELECT student_id FROM Enrollments WHERE course_id = 101
+);
+Apply Code
+Pattern 5: "X who never Y"
+Phrase: "Students who never enrolled" / "Customers who never ordered"
+
+Solution: LEFT JOIN + IS NULL or NOT EXISTS
+
+-- LEFT JOIN
+SELECT s.*
+FROM Students s
+LEFT JOIN Enrollments e ON s.student_id = e.student_id
+WHERE e.student_id IS NULL;
+
+-- NOT EXISTS
+SELECT *
+FROM Students s
+WHERE NOT EXISTS (
+    SELECT 1 FROM Enrollments e WHERE e.student_id = s.student_id
+);
+Apply Code
+Pattern 6: "Running/Cumulative"
+Phrase: "Running total" / "Cumulative sum" / "Up to date"
+
+Solution: Window function with ORDER BY
+
+SUM(value) OVER (ORDER BY date) as running_total
+Apply Code
+Pattern 7: "Consecutive"
+Phrase: "Find N consecutive days" / "Streak of X"
+
+Solution: Use ROW_NUMBER() and date difference
+
+SELECT 
+    date,
+    ROW_NUMBER() OVER (ORDER BY date) as rn,
+    DATE_SUB(date, INTERVAL rn DAY) as group_id
+FROM table_name;
+-- Consecutive dates will have same group_id
+Apply Code
+9️⃣ DECISION TREE
+Start: Read the problem
+    ↓
+Is there "for each" or "per"?
+    YES → Identify what to GROUP BY or PARTITION BY
+    NO → Continue
+    ↓
+Need ALL records from one table?
+    YES → LEFT/RIGHT JOIN
+    NO → INNER JOIN
+    ↓
+Need aggregate (sum/avg/count)?
+    YES → Use aggregate function
+        ↓
+        Filtering aggregate result?
+            YES → HAVING
+            NO → Continue
+    NO → Continue
+    ↓
+Need top N per group?
+    YES → Window function with ranking
+    NO → Continue
+    ↓
+Need to keep all rows but add calculation?
+    YES → Window function
+    NO → GROUP BY
+🔟 COMPLETE EXAMPLE WALKTHROUGH
+Problem:
+
+"Find the top 2 highest-paid employees in each department. Include departments even if they have fewer than 2 employees."
+
+Step-by-step breakdown:
+
+Subject: "in each department" → PARTITION BY department_id
+Goal: "top 2 highest-paid" → Ranking needed
+Constraint: "even if fewer than 2" → Need all departments (LEFT JOIN)
+Special: "top 2" → ROW_NUMBER() with filter <= 2
+Solution:
+
+SELECT 
+    d.department_name,
+    e.employee_name,
+    e.salary,
+    ROW_NUMBER() OVER (
+        PARTITION BY d.department_id 
+        ORDER BY e.salary DESC
+    ) as rank
+FROM Departments d
+LEFT JOIN Employees e ON d.department_id = e.department_id
+WHERE rank <= 2
+ORDER BY d.department_name, rank;
+Apply Code
+📋 QUICK REFERENCE CHECKLIST
+Before writing SQL, ask:
+
+ What is the subject? (for each X → GROUP BY or PARTITION BY X)
+ Need ALL records from a table? (YES → LEFT JOIN)
+ Need aggregation? (sum/avg/count → aggregate function)
+ Filtering before or after grouping? (before → WHERE, after → HAVING)
+ Need ranking or top N? (YES → window function)
+ Tie-breaker needed? (YES → secondary ORDER BY)
+ Need running total? (YES → window function with ORDER BY)
+
+
+# manatory sums to solve
+1407. Top Travellers
+1693. Daily Leads and Partners (meta youtbue pattern)
+1747. Leetflex Banned Accounts ( interval de morgan law start1 ≤ end2  AND  start2 ≤ end1 that is )
+1607. Sellers With No Sales
+1440. Evaluate Boolean Expression
+534. Game Play Analysis III ( prefix sum to cal the sum till cur date)
+1783. Grand Slam Titles
+1212. Team Scores in Football Tournament
+586. Customer Placing the Largest Number of Orders
+1709. Biggest Window Between Visits
+608. Tree Node
+607. Sales Person
+1890. The Latest Login in 2020 (postgre sql)
+1699. Number of Calls Between Two Persons
+181. Employees Earning More Than Their Managers (self join)
+1264. Page Recommendations(bidirectional freindship
+)
+# window function With ORDER BY → Cumulative Sum (Row-by-Row)
+SUM(value) OVER (ORDER BY day)
+Apply Code
+✅ Sums from first row to current row (prefix sum)
+Without ORDER BY → Total Sum (All Rows)
+SUM(value) OVER ()
+Apply Code
+❌ Sums entire partition/group (same value for all rows)
+
+
+
+# COALESCE VS IFNULL VS NULLIF 
+COALESCE
+
+What it does: returns the first non-NULL value.
+
+PostgreSQL: ✅ yes
+MySQL: ✅ yes
+
+Example:
+
+SELECT COALESCE(NULL, 0);              -- 0
+SELECT COALESCE(col, 'NA') FROM t;
+
+IFNULL
+
+What it does: if the first argument is NULL, return the second.
+
+PostgreSQL: ❌ no
+MySQL: ✅ yes
+
+Example (MySQL only):
+
+SELECT IFNULL(NULL, 0);                -- 0
+SELECT IFNULL(col, 'NA') FROM t;
+
+NULLIF
+
+What it does: if a = b, return NULL, else return a.
+
+PostgreSQL: ✅ yes
+MySQL: ✅ yes
+
+Example:
+
+SELECT NULLIF(0, 0);                   -- NULL
+SELECT clicks / NULLIF(impressions, 0) FROM t;  -- avoids divide-by-zero
+
+Is it okay to always use COALESCE instead of IFNULL?
+
+Yes, and it’s usually better.
+
+Reasons:
+
+Portable: works in Postgres, MySQL, SQL Server, BigQuery, Snowflake, etc.
+
+More powerful: can take more than 2 arguments:
+
+COALESCE(a, b, c, 0)
+
+
+So even in MySQL, using COALESCE is totally fine and interview-safe.
+
+
+# self join and left join with same table confusion 
+Reading self-joins with +1 / −1
+
+Pattern
+
+t1 JOIN t2 
+ON t2.value = t1.value - 1
+
+
+Read it like this:
+
+t1 is “current”
+
+t2 is “previous”
+
+Because:
+
+t2 = t1 − 1 → t2 happens before t1.
+
+If it’s dates:
+
+t2.date = t1.date - INTERVAL '1 day'
+
+
+Means:
+
+“yesterday joins with today.”
+
+Flip it:
+
+t2 = t1 + 1
+
+
+Now t2 is next, t1 is current.
+
+The LEFT JOIN “anchor rule”
+
+Use LEFT JOIN + NULL when the question sounds like:
+
+“Find rows where something did NOT happen.”
+
+Steps:
+
+Choose the row you always want to keep.
+That is your anchor (put it on the LEFT).
+
+Join to the thing that might exist (RIGHT).
+
+Write the condition relative to the left:
+
+right = left ± interval
+
+
+Filter:
+
+WHERE right.col IS NULL
+
+
+Meaning:
+
+“We looked for that row. It wasn’t there.”
+
+Examples:
+
+Churn
+No login next month
+right = left + 1 month
+
+Reactivation
+No login previous month
+right = left - 1 month
+
+When NOT to use the NULL trick
+
+Do not use NULL logic when the question is:
+
+“compare today vs yesterday”
+
+“higher salary than manager”
+
+“price went up compared to last day”
+
+“find the first login after signup”
+
+Those are comparison problems, not “missing row” problems.
+
+You use:
+
+INNER self join
+
+or window functions (LAG, LEAD)
+
+Example idea:
+
+“Return days hotter than yesterday”
+
+Anchor = today
+Join to yesterday
+Compare temps
+No NULL check needed.
+
+Date helpers to remember
+
+Snap to start of period:
+
+DATE_TRUNC('month', login_date)
+
+
+Move time:
+
+date + INTERVAL '1 month'
+date - INTERVAL '7 days'
+
+
+Extract parts:
+
+EXTRACT(month FROM login_date)
+
+One-line memory shortcuts
+
+t2 = t1 - 1
+t2 is previous, t1 is current.
+
+t2 = t1 + 1
+t2 is next, t1 is current.
+
+LEFT JOIN + NULL
+Use only when you’re finding something that didn’t happen.
+
+
+
+
+# POSTGRE SQL
+PostgreSQL mainly works with these types:
+
+DATE
+
+TIME
+
+TIMESTAMP
+
+TIMESTAMP WITH TIME ZONE (timestamptz)
+
+INTERVAL
+
+1. Getting current date and time
+CURRENT_DATE
+
+Returns today’s date (no time).
+
+SELECT CURRENT_DATE;
+
+
+Output:
+
+2026-01-08
+
+
+Use when you only care about the date.
+
+CURRENT_TIME
+
+Returns current time with timezone.
+
+SELECT CURRENT_TIME;
+
+CURRENT_TIMESTAMP
+
+Returns current date + time with timezone.
+
+SELECT CURRENT_TIMESTAMP;
+
+
+Equivalent to:
+
+SELECT now();
+
+now()
+
+Most commonly used.
+
+SELECT now();
+
+
+Type: timestamptz
+
+Use in logging, session tracking, freshness checks.
+
+2. Creating dates and timestamps
+MAKE_DATE(year, month, day)
+
+Creates a real DATE from integers.
+
+SELECT MAKE_DATE(2024, 11, 15);
+
+
+Output:
+
+2024-11-15
+
+
+Use when you have separate year, month, day columns.
+
+MAKE_TIMESTAMP(y, m, d, h, min, sec)
+
+Creates a timestamp.
+
+SELECT MAKE_TIMESTAMP(2024, 11, 15, 10, 30, 0);
+
+TO_DATE(text, format)
+
+Converts string → date.
+
+SELECT TO_DATE('2024-11-15', 'YYYY-MM-DD');
+
+TO_TIMESTAMP(text, format)
+
+Converts string → timestamp.
+
+SELECT TO_TIMESTAMP('2024-11-15 10:30', 'YYYY-MM-DD HH24:MI');
+
+3. Formatting dates (very important)
+TO_CHAR(date_or_ts, format)
+
+Converts date/timestamp → string.
+
+SELECT TO_CHAR(CURRENT_DATE, 'YYYY-MM');
+
+
+Output:
+
+2026-01
+
+
+Common formats:
+
+YYYY → year
+
+MM → month
+
+DD → day
+
+HH24 → hour (24h)
+
+MI → minutes
+
+SS → seconds
+
+Use for reporting, dashboards, grouping labels.
+
+4. Extracting parts of a date
+EXTRACT(field FROM date_or_ts)
+
+Returns a number.
+
+SELECT EXTRACT(YEAR FROM CURRENT_DATE);
+
+
+Other fields:
+
+YEAR
+
+MONTH
+
+DAY
+
+HOUR
+
+MINUTE
+
+SECOND
+
+EPOCH
+
+DATE_PART(field, date)
+
+Same as EXTRACT.
+
+SELECT DATE_PART('month', CURRENT_DATE);
+
+EPOCH (very important)
+
+Seconds since 1970-01-01 UTC.
+
+SELECT EXTRACT(EPOCH FROM now());
+
+
+Used for:
+
+duration math
+
+performance timing
+
+converting intervals to seconds
+
+5. Truncating dates (grouping by time)
+DATE_TRUNC(unit, timestamp)
+
+Cuts smaller parts.
+
+SELECT DATE_TRUNC('month', now());
+
+
+Examples:
+
+DATE_TRUNC('day', ts)
+DATE_TRUNC('month', ts)
+DATE_TRUNC('year', ts)
+
+
+Use when grouping by month, day, year.
+
+6. Date arithmetic
+Adding intervals
+SELECT CURRENT_DATE + INTERVAL '7 days';
+SELECT now() + INTERVAL '2 hours';
+
+Subtracting dates
+SELECT CURRENT_DATE - DATE '2026-01-01';
+
+
+Output:
+
+7
+
+
+Type: integer (days)
+
+Subtracting timestamps
+SELECT end_time - start_time;
+
+
+Output:
+
+3 days 04:12:10
+
+
+Type: INTERVAL
+
+7. Working with INTERVAL
+Summing intervals
+SELECT SUM(end_time - start_time)
+FROM sessions;
+
+
+Returns total interval.
+
+Convert interval → days
+SELECT EXTRACT(EPOCH FROM SUM(end_time - start_time)) / 86400
+FROM sessions;
+
+
+Why 86400?
+
+1 day = 24 × 60 × 60 seconds
+
+JUSTIFY_HOURS(interval)
+
+Normalizes hours into days.
+
+SELECT JUSTIFY_HOURS(INTERVAL '30 hours');
+
+
+Output:
+
+1 day 6 hours
+
+
+Also:
+
+JUSTIFY_DAYS
+
+JUSTIFY_INTERVAL
+
+Use after aggregations.
+
+8. Comparing dates
+WHERE order_date >= CURRENT_DATE - INTERVAL '30 days'
+
+WHERE ts BETWEEN '2026-01-01' AND '2026-01-31'
+
+9. Time zone functions
+Convert timezone
+SELECT now() AT TIME ZONE 'UTC';
+
+SELECT now() AT TIME ZONE 'America/New_York';
+
+10. Window functions with dates
+LEAD / LAG (time gaps)
+SELECT
+  user_id,
+  event_time AS start_time,
+  LEAD(event_time) OVER (
+    PARTITION BY user_id
+    ORDER BY event_time
+  ) AS end_time
+FROM events;
+
+
+Used for:
+
+session durations
+
+state changes
+
+uptime tracking
+
+11. Common interview patterns
+Find first date per user
+SELECT user_id, MIN(order_date)
+FROM orders
+GROUP BY user_id;
+
+Monthly aggregation
+SELECT
+  DATE_TRUNC('month', order_date) AS month,
+  COUNT(*)
+FROM orders
+GROUP BY month;
+
+Filter last 7 days
+WHERE created_at >= now() - INTERVAL '7 days'
+
+Final mental model (important)
+
+DATE → calendar day
+
+TIMESTAMP → date + time
+
+INTERVAL → duration
+
+EXTRACT / DATE_PART → pull numbers
+
+DATE_TRUNC → group time
+
+TO_CHAR → format output
+
+EPOCH → seconds math
+
+If you want, next I can give you:
+
+a 1-page PostgreSQL date cheat sheet, or
+
+Meta / Google interview date questions with patterns, or
+
+Common date bugs interviewers expect you to catch
+
+
+The rule you must memorize
+
+If you use LEFT JOIN, any condition on the right table must go in the ON clause, not the WHERE clause.
+
+This is one of the most important SQL rules for interviews.

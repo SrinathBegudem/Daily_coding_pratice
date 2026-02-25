@@ -930,7 +930,7 @@ class GraphTraversalPatterns:
         
         return False
     
-# CODE WITH 2 sets a bit easier to understand
+# CODE WITH 2 sets a bit easier to understand (this is what we use)
     def has_cycle_directed_two_sets(self, n: int, edges: List[List[int]]) -> bool:
         # Build adjacency list
         graph = defaultdict(list)
@@ -942,10 +942,18 @@ class GraphTraversalPatterns:
 
         def dfs(node: int) -> bool:
             # If node is in current path, we found a back edge -> cycle
+            # Am I revisiting a node in the same DFS path?
+            # If yes → cycle
             if node in path:
                 return True
 
+#Nodes that are completely explored, All descendants checked, and no cycle found from them
             # If already fully processed, no cycle from here
+            # “Have I already proven this node is safe?
+            # If yes → no need to explore again
+            # we explored this nodes and its descendants and marked this as safe no need to
+            #explore again and do the same repeated work we marked this safe which recursion unwinding
+
             if node in visited:
                 return False
 
